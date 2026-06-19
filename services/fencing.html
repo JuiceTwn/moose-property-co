@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fencing — Moose Property Co.</title>
+<meta name="description" content="Builds, repairs and refreshes that look sharp and stand straight. Property maintenance in Paisley, Walkerton, Hanover, Port Elgin &amp; surrounding Grey-Bruce.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../site.css">
+</head>
+<body id="top">
+<div id="prog"></div>
+
+<nav>
+  <div class="wrap">
+    <a href="../index.html#top" class="brand">
+      <span class="logo moose-ink"></span>
+      <span class="wm"><b>Moose</b><small>Property Co.</small></span>
+    </a>
+    <div class="navlinks">
+      <a href="../index.html#how" class="link">How it works</a>
+      <a href="../index.html#owners" class="link">Who we are</a>
+      <a href="../index.html#services" class="link">Services</a>
+      <a href="tel:+15197063325" class="ph">(519) 706-3325</a>
+    </div>
+  </div>
+</nav>
+
+<header class="svc-hero">
+  <span class="ghost moose-ink" id="ghost"></span>
+  <div class="inner">
+    <div class="crumb"><a href="../index.html#services">Services</a> &nbsp;/&nbsp; Fencing</div>
+    <h1 data-hero>Fencing</h1>
+    <p data-hero>Builds, repairs and refreshes that look sharp and stand straight.</p>
+    <div class="actions" data-hero>
+      <a href="#quote" class="btn">Get a free quote</a>
+      <a href="tel:+15197063325" class="callline">(519) 706-3325<small>Call or text</small></a>
+    </div>
+  </div>
+</header>
+
+<section class="block panel">
+  <div class="wrap">
+    <div class="svc-body">
+      <div class="reveal">
+        <h2>Straight lines that last.</h2>
+        <p>New builds go in plumb and on proper footings so they don't lean a season later. Repairs mean swapping the rotten posts and boards, re-hanging the gates that drag, and getting the line true again.</p>
+        <p>Want it to last and look its best? We'll clean, sand and re-stain or paint so the whole run matches and the wood is protected.</p>
+        <p style="margin-top:6px">A good fence is half the look of a property and all of its privacy. We build new runs, fix the sagging and broken sections, and refresh tired wood so the whole line stands straight and looks sharp.</p>
+      </div>
+      <aside class="svc-aside reveal" id="quote">
+        <div class="role">What's included</div>
+        <ul class="incl">
+        <li>New fence builds, set plumb on proper footings</li>
+        <li>Post, board and rail repairs</li>
+        <li>Sagging or dragging gates re-hung</li>
+        <li>Cleaning, sanding and re-staining or painting</li>
+        <li>Sections matched so the whole line looks one piece</li>
+        <li>Site left clear — old material hauled away</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <p class="lede reveal">More of the property, handled.</p>
+    <div class="more reveal">
+      <a href="lawns-and-edging.html"><div class="role">Lawn Care</div><h4>Lawns & Edging</h4></a>
+      <a href="gutter-cleaning.html"><div class="role">Gutters</div><h4>Gutter Cleaning</h4></a>
+      <a href="window-washing.html"><div class="role">Windows</div><h4>Window Washing</h4></a>
+    </div>
+  </div>
+</section>
+
+<section class="close" id="close">
+  <div class="wrap">
+    <span class="stamp moose-white" id="closestamp"></span>
+    <h2>Fencing, done right. <em>And you never think about it.</em></h2>
+    <p>Free quotes, no pressure. Serving Paisley, Walkerton, Hanover, Port Elgin &amp; surrounding.</p>
+    <div class="quotebox reveal">
+      <h3>Send a photo, get a quote</h3>
+      <p>Snap a picture of what needs doing and send it over. We'll text or email back a price.</p>
+      <div class="qbtns">
+        <a class="qbtn" href="sms:+15197063325?body=Hi%20Moose%2C%20here%20is%20a%20photo%20for%20a%20fencing%20quote%3A">Text a photo</a>
+        <a class="qbtn alt" href="mailto:colwell.04@hotmail.com?subject=Quote%20Request%20-%20Fencing&amp;body=Hi%20Moose%2C%20here%20is%20what%20my%20property%20needs%3A">Email a photo</a>
+      </div>
+    </div>
+    <div class="owners">
+      <div class="owner"><div class="role">Owner</div><div class="nm">Chase Vienneau</div><a href="tel:+15197063325" class="nb">(519) 706-3325</a></div>
+      <div class="owner"><div class="role">Owner</div><div class="nm">Justin Colwell</div><a href="mailto:colwell.04@hotmail.com" class="nb email">colwell.04@hotmail.com</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span style="font-weight:800;text-transform:uppercase;letter-spacing:.04em">Moose Property Co.</span>
+    <span>Owned and run by Justin Colwell and Chase Vienneau</span>
+    <span>Paisley · Walkerton · Hanover · Port Elgin &amp; surrounding · © 2026</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  var prog = document.getElementById('prog');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }, {passive:true});
+  if (window.gsap) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('[data-hero]', {y:24, opacity:0, duration:1, ease:'power3.out', stagger:.12, delay:.1});
+    gsap.utils.toArray('.reveal').forEach(function(el){
+      gsap.from(el, {y:26, opacity:0, duration:.9, ease:'power2.out', scrollTrigger:{trigger:el, start:'top 86%', once:true}});
+    });
+    gsap.to('#ghost', {y:90, ease:'none', scrollTrigger:{trigger:'.svc-hero', start:'top top', end:'bottom top', scrub:true}});
+    gsap.to('#closestamp', {y:-30, ease:'none', scrollTrigger:{trigger:'.close', start:'top bottom', end:'bottom top', scrub:true}});
+  }
+</script>
+</body>
+</html>
