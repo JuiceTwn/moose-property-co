@@ -43,6 +43,27 @@
       </div>
       <a href="tel:+15197063325" class="ph">(519) 706-3325</a>
     </div>
+      <button class="burger" type="button" aria-label="Menu" aria-controls="mobilemenu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+  </div>
+  <div class="mobilemenu" id="mobilemenu">
+    <div class="mm-inner">
+      <a href="#how">How it works</a>
+      <a href="#owners">Who we are</a>
+      <a href="#services">Services</a>
+      <div class="head">Our services</div>
+        <a class="sub" href="services/lawns-and-edging.html">Lawns & Edging</a>
+        <a class="sub" href="services/gutter-cleaning.html">Gutter Cleaning</a>
+        <a class="sub" href="services/window-washing.html">Window Washing</a>
+        <a class="sub" href="services/pressure-washing.html">Pressure Washing</a>
+        <a class="sub" href="services/fencing.html">Fencing</a>
+        <a class="sub" href="services/seasonal-care.html">Seasonal Care</a>
+      <div class="mm-cta">
+        <a class="call" href="tel:+15197063325">Call us</a>
+        <a class="text" href="sms:+15197063325?body=Hi%20Moose%2C%20here%20is%20a%20photo%20for%20a%20quote%3A">Text a photo</a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -191,5 +212,6 @@
     gsap.to('#closestamp', {y:-30, ease:'none', scrollTrigger:{trigger:'.close', start:'top bottom', end:'bottom top', scrub:true}});
   }
 </script>
+<script src="site.js"></script>
 </body>
 </html>
