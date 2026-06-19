@@ -150,3 +150,15 @@
   a.svc:hover h3{color:var(--olive)}
   a.svc .go{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--stone);margin-top:8px;display:inline-block}
   a.svc:hover .go{color:var(--olive)}
+
+  /* ---- nav services dropdown ---- */
+  .navlinks .drop{position:relative;display:flex;align-items:center}
+  .navlinks .drop>.link{display:inline-flex;align-items:center;gap:5px}
+  .navlinks .drop>.link::before{content:"";position:absolute;left:0;right:0;top:100%;height:18px}
+  .navlinks .drop .menu{position:absolute;top:100%;left:50%;margin-top:16px;transform:translateX(-50%) translateY(6px);background:var(--pure);border:1px solid var(--line);border-radius:8px;padding:8px;min-width:230px;box-shadow:0 16px 44px rgba(28,26,23,.13);opacity:0;visibility:hidden;transition:opacity .2s,transform .2s;z-index:60}
+  .navlinks .drop:hover .menu,.navlinks .drop:focus-within .menu{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .navlinks .drop .menu a{display:block;padding:10px 12px;border-radius:5px;font-size:14.5px;color:var(--soft);white-space:nowrap}
+  .navlinks .drop .menu a::after{display:none}
+  .navlinks .drop .menu a:hover{background:var(--white);color:var(--ink)}
+  .navlinks .drop .menu a.active{color:var(--olive);font-weight:700}
+  @media(max-width:780px){.navlinks .drop{display:none}}
