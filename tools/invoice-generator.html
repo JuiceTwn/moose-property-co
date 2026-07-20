@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moose Property Co. — Quote &amp; Invoice Generator</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================================
+     MOOSE PROPERTY CO. — palette pulled straight from the before/after asset
+     =================================================================== */
+  :root{
+    --green:#26402D;     /* deep forest — the footer bar */
+    --green-2:#1F5C34;   /* AFTER badge green */
+    --red:#9E2B25;       /* BEFORE badge barn red */
+    --cream:#F4EFE4;     /* warm paper cream */
+    --sage:#8DA593;      /* muted "PAISLEY, ON" sage */
+    --stone:#9A968C;     /* the border-stone grey */
+    --mulch:#6E4A32;     /* fresh mulch brown */
+    --ink:#1B1B18;
+    --paper:#FFFFFF;
+    --line:#E4DFD2;
+    --muted:#6B6659;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- App shell: editor left, live document right ---- */
+  .app{
+    display:grid;
+    grid-template-columns:390px 1fr;
+    gap:0;
+    min-height:100vh;
+  }
+  @media (max-width:960px){
+    .app{grid-template-columns:1fr;}
+  }
+
+  /* ================= TOOLBAR ================= */
+  .toolbar{
+    grid-column:1 / -1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    background:var(--green);
+    color:var(--cream);
+    padding:14px 22px;
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+  .toolbar .brand{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    letter-spacing:.06em;
+    font-size:22px;
+    text-transform:uppercase;
+  }
+  .toolbar .brand small{
+    display:block;
+    font-family:'Archivo',sans-serif;
+    font-weight:500;
+    letter-spacing:.14em;
+    font-size:10px;
+    color:var(--sage);
+    text-transform:uppercase;
+    margin-top:-2px;
+  }
+  .toolbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+
+  /* doc-type toggle — echoes the BEFORE/AFTER stamp language */
+  .doctype{
+    display:inline-flex;
+    background:rgba(255,255,255,.10);
+    border-radius:6px;
+    padding:3px;
+  }
+  .doctype button{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    font-size:14px;
+    border:0;
+    background:transparent;
+    color:var(--sage);
+    padding:6px 16px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+  .doctype button.active{background:var(--cream);color:var(--green);}
+
+  .btn{
+    font-family:'Archivo',sans-serif;
+    font-weight:600;
+    font-size:13px;
+    border:0;
+    border-radius:6px;
+    padding:9px 16px;
+    cursor:pointer;
+    transition:transform .1s,filter .15s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-print{background:var(--cream);color:var(--green);}
+  .btn-ghost{background:rgba(255,255,255,.12);color:var(--cream);}
+  .btn:hover{filter:brightness(1.05);}
+
+  /* ================= EDITOR PANEL ================= */
+  .editor{
+    background:#FBF9F3;
+    border-right:1px solid var(--line);
+    padding:22px 20px 60px;
+    overflow-y:auto;
+  }
+  @media (max-width:960px){.editor{border-right:0;border-bottom:1px solid var(--line);}}
+
+  .group{margin-bottom:26px;}
+  .group > h3{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    font-size:14px;
+    color:var(--green);
+    margin:0 0 12px;
+    padding-bottom:6px;
+    border-bottom:2px solid var(--line);
+  }
+  label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 4px;
+  }
+  input,textarea,select{
+    width:100%;
+    font-family:'Archivo',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:8px 10px;
+    margin-bottom:12px;
+  }
+  input:focus,textarea:focus,select:focus{
+    outline:2px solid var(--green-2);
+    outline-offset:0;
+    border-color:transparent;
+  }
+  textarea{resize:vertical;min-height:70px;line-height:1.5;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;}
+  .inline{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .inline input[type=checkbox]{width:auto;margin:0;}
+  .inline label{margin:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);}
+
+  /* line-item editor rows */
+  .item-row{
+    display:grid;
+    grid-template-columns:1fr 54px 78px 30px;
+    gap:6px;
+    align-items:start;
+    margin-bottom:8px;
+  }
+  .item-row input{margin-bottom:0;}
+  .item-del{
+    background:transparent;border:1px solid var(--line);
+    border-radius:6px;color:var(--red);font-size:16px;line-height:1;
+    cursor:pointer;height:36px;
+  }
+  .item-del:hover{background:#fbeceb;}
+  .add-item{
+    width:100%;background:transparent;border:1px dashed var(--stone);
+    color:var(--green);font-weight:600;font-size:13px;border-radius:6px;
+    padding:9px;cursor:pointer;margin-top:2px;
+  }
+  .add-item:hover{background:#f2efe6;}
+  .hint{font-size:11px;color:var(--muted);margin:-6px 0 12px;line-height:1.4;}
+
+  /* editor segmented control */
+  .seg{display:flex;background:#efece3;border-radius:6px;padding:3px;margin-bottom:6px;}
+  .seg button{
+    flex:1;font-family:'Archivo',sans-serif;font-weight:600;font-size:12px;
+    border:0;background:transparent;color:var(--muted);
+    padding:7px 8px;border-radius:4px;cursor:pointer;transition:background .15s,color .15s;
+  }
+  .seg button.active{background:var(--paper);color:var(--green);box-shadow:0 1px 2px rgba(0,0,0,.06);}
+
+  /* "what's included" list (single-project mode) */
+  ul.included{list-style:none;margin:0 0 22px;padding:0;}
+  ul.included li{
+    padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;
+    position:relative;padding-left:20px;
+  }
+  ul.included li:before{
+    content:"";position:absolute;left:2px;top:16px;
+    width:7px;height:7px;background:var(--green-2);border-radius:50%;
+  }
+  ul.included li span{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* ================= DOCUMENT (client-facing) ================= */
+  .stage{
+    padding:30px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    background:
+      radial-gradient(circle at 20% 0%, #efe9db 0%, transparent 55%),
+      var(--cream);
+  }
+  .doc{
+    width:100%;
+    max-width:760px;
+    background:var(--paper);
+    box-shadow:0 10px 40px rgba(38,64,45,.14);
+    border-radius:4px;
+    overflow:hidden;
+    animation:rise .5s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  @media (prefers-reduced-motion:reduce){.doc{animation:none;}}
+
+  /* header plate — same enamel-bar feel as the photo footer */
+  .doc-head{
+    background:var(--green);
+    color:var(--cream);
+    padding:26px 34px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+  }
+  .doc-wordmark{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:30px;
+    line-height:.95;
+  }
+  .doc-wordmark small{
+    display:block;
+    font-family:'Archivo',sans-serif;
+    font-weight:500;
+    letter-spacing:.22em;
+    font-size:10px;
+    color:var(--sage);
+    margin-top:5px;
+  }
+  .doc-stamp{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    font-size:16px;
+    color:var(--cream);
+    background:var(--red);
+    padding:6px 16px;
+    border-radius:4px;
+    white-space:nowrap;
+  }
+  .doc-stamp.invoice{background:var(--green-2);}
+
+  .doc-body{padding:28px 34px 34px;}
+
+  /* meta + parties */
+  .parties{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-bottom:24px;
+  }
+  .parties .blk-label{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;letter-spacing:.10em;text-transform:uppercase;
+    font-size:12px;color:var(--mulch);margin-bottom:6px;
+  }
+  .parties .name{font-weight:700;font-size:15px;}
+  .parties .line{font-size:13px;color:var(--muted);}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:22px;
+    padding:14px 0;margin-bottom:22px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .meta div span{
+    display:block;font-size:10px;font-weight:600;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .meta div strong{font-size:14px;font-variant-numeric:tabular-nums;}
+
+  /* items table */
+  table{width:100%;border-collapse:collapse;margin-bottom:18px;}
+  thead th{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    font-size:12px;color:var(--green);text-align:left;
+    padding:0 0 8px;border-bottom:2px solid var(--green);
+  }
+  thead th.num{text-align:right;}
+  tbody td{
+    padding:11px 0;border-bottom:1px solid var(--line);
+    font-size:14px;vertical-align:top;
+  }
+  tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  tbody td .desc-sub{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* totals */
+  .totals{display:flex;justify-content:flex-end;margin-bottom:26px;}
+  .totals-inner{width:min(300px,100%);}
+  .totals-row{
+    display:flex;justify-content:space-between;
+    padding:6px 0;font-size:14px;font-variant-numeric:tabular-nums;
+  }
+  .totals-row.sub{color:var(--muted);}
+  .totals-row.grand{
+    border-top:2px solid var(--green);margin-top:4px;padding-top:10px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;
+    font-size:20px;letter-spacing:.02em;
+  }
+  .totals-row.deposit{
+    background:#f2efe6;margin:8px -12px 0;padding:10px 12px;border-radius:6px;
+    font-weight:600;color:var(--green);
+  }
+  .totals-row.balance{padding:8px 12px 0;font-weight:600;}
+
+  /* notes + terms */
+  .notes-blk{margin-bottom:24px;}
+  .blk-head{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;letter-spacing:.10em;text-transform:uppercase;
+    font-size:13px;color:var(--green);margin:0 0 8px;
+  }
+  .notes-blk p{margin:0;font-size:14px;white-space:pre-wrap;}
+  .terms{
+    background:#FAF8F2;border:1px solid var(--line);border-radius:8px;
+    padding:18px 20px;margin-bottom:22px;
+  }
+  .terms .blk-head{color:var(--mulch);}
+  .terms p{margin:0;font-size:13px;color:#3d3a33;white-space:pre-wrap;line-height:1.6;}
+
+  .payline{font-size:13px;color:var(--muted);margin-bottom:18px;}
+  .payline strong{color:var(--ink);}
+
+  .signoff{
+    border-top:1px solid var(--line);padding-top:16px;
+    font-size:14px;color:var(--green);font-style:italic;
+  }
+
+  /* footer stone bar — mirrors the photo's bottom band */
+  .doc-foot{
+    background:var(--green);color:var(--sage);
+    padding:12px 34px;display:flex;justify-content:space-between;
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    letter-spacing:.10em;text-transform:uppercase;font-size:13px;
+  }
+  .doc-foot .cream{color:var(--cream);}
+
+  /* ================= PRINT ================= */
+  @media print{
+    .toolbar,.editor{display:none !important;}
+    .app{display:block;}
+    .stage{padding:0;background:#fff;}
+    .doc{box-shadow:none;max-width:none;border-radius:0;animation:none;}
+    .doc-head,.doc-foot,.doc-stamp,.totals-row.deposit{
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    }
+    @page{margin:14mm;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ TOOLBAR ============ -->
+  <div class="toolbar">
+    <div class="brand">Moose Property Co.<small>Quote &amp; Invoice Tool</small></div>
+    <div class="toolbar-actions">
+      <div class="doctype" id="doctype">
+        <button data-type="quote" class="active">Quote</button>
+        <button data-type="invoice">Invoice</button>
+      </div>
+      <button class="btn btn-ghost" id="resetBtn">Reset</button>
+      <button class="btn btn-print" id="printBtn">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <!-- ============ EDITOR ============ -->
+  <div class="editor">
+
+    <div class="group">
+      <h3>Your Business</h3>
+      <label>Business name</label>
+      <input id="fromName" value="Moose Property Co." />
+      <label>Tagline / spot line</label>
+      <input id="fromTag" value="Curb-appeal &amp; property transformations" />
+      <div class="row2">
+        <div><label>Phone</label><input id="fromPhone" value="(519) 000-0000" /></div>
+        <div><label>Email</label><input id="fromEmail" value="colwell.04@hotmail.com" /></div>
+      </div>
+      <label>Serving</label>
+      <input id="fromArea" value="Paisley, ON &amp; area" />
+    </div>
+
+    <div class="group">
+      <h3>Client</h3>
+      <label>Client name</label>
+      <input id="toName" value="" />
+      <label>Address / property</label>
+      <input id="toAddr" value="" placeholder="123 Concession Rd, Paisley" />
+      <div class="row2">
+        <div><label>Phone</label><input id="toPhone" value="" placeholder="optional" /></div>
+        <div><label>Email</label><input id="toEmail" value="" placeholder="optional" /></div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>Details</h3>
+      <div class="row2">
+        <div><label>Number</label><input id="docNum" value="MP-1001" /></div>
+        <div><label>Date</label><input id="docDate" type="date" /></div>
+      </div>
+      <label>Quote valid for (days)</label>
+      <input id="validDays" type="number" value="30" min="0" />
+    </div>
+
+    <div class="group">
+      <h3>Work</h3>
+      <div id="itemRows"></div>
+      <button class="add-item" id="addItem">+ Add line</button>
+    </div>
+
+    <div class="group">
+      <h3>Money</h3>
+      <label>Show pricing as</label>
+      <div class="seg" id="priceMode">
+        <button data-mode="project" class="active">Single project price</button>
+        <button data-mode="itemized">Itemized</button>
+      </div>
+      <p class="hint">Single price sells the result and keeps your margins your business. Itemized shows every line and rate, which invites people to price-check your materials. Default to single for premium work.</p>
+      <div class="inline">
+        <input type="checkbox" id="taxOn" />
+        <label for="taxOn">Charge HST (Ontario, 13%)</label>
+      </div>
+      <p class="hint">Leave this OFF until you're registered for HST. You only have to register once you pass $30k in sales over four quarters, and until then you don't charge it. When you do register, turn this on and add your number below.</p>
+      <div id="hstNumWrap" style="display:none;">
+        <label>HST / GST number</label>
+        <input id="hstNum" value="" placeholder="12345 6789 RT0001" />
+      </div>
+      <label>Deposit to book (%)</label>
+      <input id="depositPct" type="number" value="30" min="0" max="100" />
+      <p class="hint">30% is a defensible default for premium residential. Enough to cover materials and hold the schedule without spooking a careful client. Bump it up for big hardscape jobs where you're out real money on materials first.</p>
+    </div>
+
+    <div class="group">
+      <h3>Notes to client</h3>
+      <textarea id="notes" placeholder="e.g. Starting with the front gardens, then the deck. Justin on site around 5–5:30."></textarea>
+    </div>
+
+    <div class="group">
+      <h3>Terms</h3>
+      <textarea id="terms" style="min-height:150px;"></textarea>
+      <p class="hint">This is the part that stops deposit arguments before they start. It states, in writing, <em>why</em> the deposit exists. Edit the voice to sound like you.</p>
+    </div>
+
+    <div class="group">
+      <h3>Sign-off</h3>
+      <input id="signoff" value="Thanks for having us on your property. We don't take it for granted." />
+    </div>
+
+  </div>
+
+  <!-- ============ DOCUMENT ============ -->
+  <div class="stage">
+    <div class="doc" id="doc">
+      <div class="doc-head">
+        <div class="doc-wordmark" id="dWordmark">MOOSE PROPERTY CO.<small id="dTag">CURB-APPEAL &amp; PROPERTY TRANSFORMATIONS</small></div>
+        <div class="doc-stamp" id="dStamp">Quote</div>
+      </div>
+      <div class="doc-body">
+
+        <div class="parties">
+          <div>
+            <div class="blk-label">From</div>
+            <div class="name" id="pFromName">Moose Property Co.</div>
+            <div class="line" id="pFromPhone"></div>
+            <div class="line" id="pFromEmail"></div>
+            <div class="line" id="pFromArea"></div>
+          </div>
+          <div>
+            <div class="blk-label">Prepared for</div>
+            <div class="name" id="pToName"></div>
+            <div class="line" id="pToAddr"></div>
+            <div class="line" id="pToPhone"></div>
+            <div class="line" id="pToEmail"></div>
+          </div>
+        </div>
+
+        <div class="meta">
+          <div><span id="mNumLabel">Quote #</span><strong id="pNum"></strong></div>
+          <div><span>Date</span><strong id="pDate"></strong></div>
+          <div id="mValidWrap"><span>Valid until</span><strong id="pValid"></strong></div>
+        </div>
+
+        <div id="itemizedView">
+          <table>
+            <thead>
+              <tr>
+                <th>Work</th>
+                <th class="num">Qty</th>
+                <th class="num">Rate</th>
+                <th class="num">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="pItems"></tbody>
+          </table>
+        </div>
+
+        <div id="projectView" style="display:none;">
+          <div class="blk-head">What's included</div>
+          <ul class="included" id="pIncluded"></ul>
+        </div>
+
+        <div class="totals">
+          <div class="totals-inner" id="pTotals"></div>
+        </div>
+
+        <div class="notes-blk" id="pNotesBlk">
+          <div class="blk-head">A few notes</div>
+          <p id="pNotes"></p>
+        </div>
+
+        <div class="terms">
+          <div class="blk-head">Terms</div>
+          <p id="pTerms"></p>
+        </div>
+
+        <div class="payline" id="pPayline"></div>
+
+        <div class="signoff" id="pSignoff"></div>
+      </div>
+
+      <div class="doc-foot">
+        <span class="cream" id="fBrand">MOOSE PROPERTY CO.</span>
+        <span id="fArea">PAISLEY, ON</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const CAD = new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'});
+const money = n => CAD.format(isFinite(n) ? n : 0);
+
+const DEFAULT_TERMS =
+`Deposit and scheduling. A deposit is due to lock in your spot on our schedule and cover materials. Because we complete most jobs over several visits, the deposit is what lets us book you in and get everything ready before we start.
+
+Balance. The rest is due on completion, once you've walked the finished work with us and you're happy with it. Cash, cheque, or e-transfer all work.
+
+This quote. Good for the number of days noted above. Material prices move around, so if it's been longer than that we'll double-check the figures before starting.
+
+Changes. This covers the work described. If you'd like to add anything once we're rolling, no problem. We'll price it and clear it with you first, never spring it on you after.
+
+Standing behind it. If something isn't right, tell us and we'll come back and make it right.`;
+
+const todayISO = () => new Date().toISOString().slice(0,10);
+
+let state = {
+  docType:'quote',
+  from:{name:'Moose Property Co.', tag:'Curb-appeal & property transformations',
+        phone:'(519) 000-0000', email:'colwell.04@hotmail.com', area:'Paisley, ON & area'},
+  to:{name:'', addr:'', phone:'', email:''},
+  num:'MP-1001',
+  date:todayISO(),
+  validDays:30,
+  items:[{desc:'',sub:'',qty:1,rate:0}],
+  taxOn:false, taxRate:0.13, hstNum:'',
+  depositPct:30,
+  priceMode:'project',
+  notes:'',
+  terms:DEFAULT_TERMS,
+  signoff:"Thanks for having us on your property. We don't take it for granted."
+};
+
+function saveBiz(){
+  try{
+    localStorage.setItem('moose_biz', JSON.stringify(state.from));
+    localStorage.setItem('moose_lastnum', state.num);
+  }catch(e){}
+}
+function loadBiz(){
+  try{
+    const b = localStorage.getItem('moose_biz');
+    if(b) state.from = Object.assign(state.from, JSON.parse(b));
+    const n = localStorage.getItem('moose_lastnum');
+    if(n) state.num = n;
+  }catch(e){}
+}
+
+function totals(){
+  const subtotal = state.items.reduce((s,it)=> s + (Number(it.qty)||0)*(Number(it.rate)||0), 0);
+  const tax = state.taxOn ? subtotal*state.taxRate : 0;
+  const grand = subtotal + tax;
+  const deposit = grand * (Number(state.depositPct)||0)/100;
+  return {subtotal, tax, grand, deposit, balance:grand-deposit};
+}
+
+function render(){
+  const isInvoice = state.docType==='invoice';
+  const t = totals();
+
+  document.getElementById('dWordmark').childNodes[0].nodeValue = state.from.name.toUpperCase();
+  document.getElementById('dTag').textContent = state.from.tag.toUpperCase();
+  const stamp = document.getElementById('dStamp');
+  stamp.textContent = isInvoice ? 'Invoice' : 'Quote';
+  stamp.classList.toggle('invoice', isInvoice);
+
+  document.getElementById('pFromName').textContent = state.from.name;
+  document.getElementById('pFromPhone').textContent = state.from.phone;
+  document.getElementById('pFromEmail').textContent = state.from.email;
+  document.getElementById('pFromArea').textContent  = state.from.area;
+  document.getElementById('pToName').textContent  = state.to.name || '—';
+  document.getElementById('pToAddr').textContent  = state.to.addr;
+  document.getElementById('pToPhone').textContent = state.to.phone;
+  document.getElementById('pToEmail').textContent = state.to.email;
+
+  document.getElementById('mNumLabel').textContent = isInvoice ? 'Invoice #' : 'Quote #';
+  document.getElementById('pNum').textContent  = state.num;
+  document.getElementById('pDate').textContent = fmtDate(state.date);
+  const validWrap = document.getElementById('mValidWrap');
+  if(isInvoice){ validWrap.style.display='none'; }
+  else{
+    validWrap.style.display='';
+    document.getElementById('pValid').textContent = fmtDate(addDays(state.date, state.validDays));
+  }
+
+  const itemized = state.priceMode==='itemized';
+  document.getElementById('itemizedView').style.display = itemized ? '' : 'none';
+  document.getElementById('projectView').style.display  = itemized ? 'none' : '';
+
+  if(itemized){
+    document.getElementById('pItems').innerHTML = state.items.map(it=>{
+      const amt = (Number(it.qty)||0)*(Number(it.rate)||0);
+      return `<tr>
+        <td>${esc(it.desc)||'&nbsp;'}${it.sub?`<span class="desc-sub">${esc(it.sub)}</span>`:''}</td>
+        <td class="num">${it.qty}</td>
+        <td class="num">${money(it.rate)}</td>
+        <td class="num">${money(amt)}</td>
+      </tr>`;
+    }).join('');
+  } else {
+    document.getElementById('pIncluded').innerHTML = state.items
+      .filter(it => (it.desc||'').trim() || (it.sub||'').trim())
+      .map(it => `<li><strong>${esc(it.desc)}</strong>${it.sub?`<span>${esc(it.sub)}</span>`:''}</li>`)
+      .join('');
+  }
+
+  const showSub = itemized || state.taxOn;
+  let rows = '';
+  if(showSub){
+    rows += `<div class="totals-row sub"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>`;
+  }
+  if(state.taxOn){
+    rows += `<div class="totals-row sub"><span>HST (13%)</span><span>${money(t.tax)}</span></div>`;
+  }
+  rows += `<div class="totals-row grand"><span>${isInvoice?'Total':'Estimate'}</span><span>${money(t.grand)}</span></div>`;
+  if(state.depositPct>0){
+    if(isInvoice){
+      rows += `<div class="totals-row deposit"><span>Deposit received</span><span>– ${money(t.deposit)}</span></div>`;
+      rows += `<div class="totals-row balance"><span>Balance due</span><span>${money(t.balance)}</span></div>`;
+    }else{
+      rows += `<div class="totals-row deposit"><span>Deposit to book (${state.depositPct}%)</span><span>${money(t.deposit)}</span></div>`;
+      rows += `<div class="totals-row balance"><span>Balance on completion</span><span>${money(t.balance)}</span></div>`;
+    }
+  }
+  document.getElementById('pTotals').innerHTML = rows;
+
+  const notesBlk = document.getElementById('pNotesBlk');
+  if(state.notes.trim()){ notesBlk.style.display=''; document.getElementById('pNotes').textContent = state.notes; }
+  else notesBlk.style.display='none';
+
+  document.getElementById('pTerms').textContent = state.terms;
+
+  const hst = (state.taxOn && state.hstNum.trim()) ? ` · HST# ${esc(state.hstNum)}` : '';
+  document.getElementById('pPayline').innerHTML =
+    `Payable by cash, cheque, or e-transfer to <strong>${esc(state.from.email)}</strong>${hst}`;
+
+  document.getElementById('pSignoff').textContent = state.signoff;
+  document.getElementById('fBrand').textContent = state.from.name.toUpperCase();
+  document.getElementById('fArea').textContent  = (state.from.area.split('&')[0].trim() || 'PAISLEY, ON').toUpperCase();
+}
+
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function addDays(iso,d){const dt=new Date(iso+'T00:00:00');dt.setDate(dt.getDate()+Number(d||0));return dt.toISOString().slice(0,10);}
+function fmtDate(iso){
+  if(!iso) return '';
+  const dt=new Date(iso+'T00:00:00');
+  return dt.toLocaleDateString('en-CA',{year:'numeric',month:'long',day:'numeric'});
+}
+
+function renderItemRows(){
+  const wrap = document.getElementById('itemRows');
+  wrap.innerHTML = '';
+  state.items.forEach((it,i)=>{
+    const row = document.createElement('div');
+    row.className='item-row';
+    row.innerHTML = `
+      <input placeholder="Work item" value="${esc(it.desc)}" data-i="${i}" data-k="desc" />
+      <input type="number" min="0" step="0.5" value="${it.qty}" data-i="${i}" data-k="qty" />
+      <input type="number" min="0" step="1" value="${it.rate}" data-i="${i}" data-k="rate" />
+      <button class="item-del" data-del="${i}" title="Remove">×</button>`;
+    wrap.appendChild(row);
+    const subRow = document.createElement('div');
+    subRow.className='item-row';
+    subRow.style.gridTemplateColumns='1fr 30px';
+    subRow.innerHTML = `<input placeholder="Sub-note (optional)" value="${esc(it.sub||'')}" data-i="${i}" data-k="sub" style="font-size:12px;" /><span></span>`;
+    wrap.appendChild(subRow);
+  });
+  wrap.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      const i=+e.target.dataset.i, k=e.target.dataset.k;
+      state.items[i][k] = e.target.value;
+      render();
+    });
+  });
+  wrap.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      state.items.splice(+e.target.dataset.del,1);
+      renderItemRows(); render();
+    });
+  });
+}
+
+function bind(id, path, cast){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input',()=>{
+    let v = el.type==='checkbox' ? el.checked : el.value;
+    if(cast) v=cast(v);
+    setPath(state,path,v);
+    if(id==='taxOn') document.getElementById('hstNumWrap').style.display = el.checked?'':'none';
+    if(['fromName','fromTag','fromPhone','fromEmail','fromArea','docNum'].includes(id)) saveBiz();
+    render();
+  });
+}
+function setPath(o,path,v){const p=path.split('.');let c=o;for(let i=0;i<p.length-1;i++)c=c[p[i]];c[p[p.length-1]]=v;}
+
+function initEditorValues(){
+  document.getElementById('fromName').value=state.from.name;
+  document.getElementById('fromTag').value=state.from.tag;
+  document.getElementById('fromPhone').value=state.from.phone;
+  document.getElementById('fromEmail').value=state.from.email;
+  document.getElementById('fromArea').value=state.from.area;
+  document.getElementById('docNum').value=state.num;
+  document.getElementById('docDate').value=state.date;
+  document.getElementById('terms').value=state.terms;
+}
+
+document.getElementById('doctype').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.docType=b.dataset.type;
+  document.querySelectorAll('#doctype button').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+
+document.getElementById('priceMode').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  state.priceMode=b.dataset.mode;
+  document.querySelectorAll('#priceMode button').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+
+document.getElementById('addItem').addEventListener('click',()=>{
+  state.items.push({desc:'',sub:'',qty:1,rate:0});
+  renderItemRows(); render();
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('Clear the client + work fields and start a fresh document? Your business info stays saved.')){
+    state.to={name:'',addr:'',phone:'',email:''};
+    state.items=[{desc:'',sub:'',qty:1,rate:0}];
+    state.notes=''; state.docType='quote'; state.date=todayISO();
+    document.getElementById('toName').value=''; document.getElementById('toAddr').value='';
+    document.getElementById('toPhone').value=''; document.getElementById('toEmail').value='';
+    document.getElementById('notes').value=''; document.getElementById('docDate').value=state.date;
+    document.querySelectorAll('#doctype button').forEach(x=>x.classList.toggle('active',x.dataset.type==='quote'));
+    renderItemRows(); render();
+  }
+});
+
+loadBiz();
+initEditorValues();
+
+bind('fromName','from.name');  bind('fromTag','from.tag');
+bind('fromPhone','from.phone');bind('fromEmail','from.email');
+bind('fromArea','from.area');
+bind('toName','to.name');      bind('toAddr','to.addr');
+bind('toPhone','to.phone');    bind('toEmail','to.email');
+bind('docNum','num');          bind('docDate','date');
+bind('validDays','validDays',Number);
+bind('taxOn','taxOn');         bind('hstNum','hstNum');
+bind('depositPct','depositPct',Number);
+bind('notes','notes');         bind('terms','terms');
+bind('signoff','signoff');
+
+renderItemRows();
+render();
+</script>
+</body>
+</html>
