@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>if(!localStorage.getItem('mpc_auth'))window.location.replace('login.html');</script>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools — Moose Property Co.</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{color-scheme:light;--white:#f6f4ef;--pure:#ffffff;--ink:#1c1a17;--olive:#555c3a;--stone:#a89c86;--soft:#6f685c;--line:rgba(28,26,23,.13)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hanken Grotesk',sans-serif;background:var(--white);color:var(--ink);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+
+  .dash-nav{position:sticky;top:0;z-index:50;background:rgba(246,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .dash-nav .inner{max-width:1100px;margin:0 auto;padding:0 32px;height:78px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo{width:42px;height:39px;background:url(../moose-ink.png) center/contain no-repeat;display:inline-block}
+  .brand .wm{display:flex;flex-direction:column;line-height:1}
+  .brand .wm b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:18px}
+  .brand .wm small{font-weight:600;letter-spacing:.28em;font-size:9px;color:var(--soft);margin-top:4px}
+  .logout-btn{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);background:none;border:1.5px solid var(--line);border-radius:3px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s}
+  .logout-btn:hover{color:var(--ink);border-color:var(--stone)}
+
+  .dash-body{flex:1;max-width:1100px;margin:0 auto;padding:64px 32px;width:100%}
+  .dash-body h1{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:28px}
+
+  .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .tool-card{display:flex;flex-direction:column;gap:6px;padding:26px 28px;background:var(--pure);border:1px solid var(--line);border-radius:8px;transition:transform .18s,border-color .18s,box-shadow .18s}
+  .tool-card:hover{transform:translateY(-2px);border-color:var(--olive);box-shadow:0 8px 24px rgba(28,26,23,.07)}
+  .tool-card .icon{font-size:28px;line-height:1;margin-bottom:8px}
+  .tool-card h2{font-size:18px;font-weight:700;color:#2e2b23}
+  .tool-card p{font-size:14px;color:var(--soft);line-height:1.55}
+  .tool-card .go{margin-top:12px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--olive)}
+
+  @media(max-width:600px){.dash-body{padding:40px 24px}}
+</style>
+</head>
+<body>
+
+<header class="dash-nav">
+  <div class="inner">
+    <a href="../index.html" class="brand">
+      <span class="logo"></span>
+      <span class="wm"><b>Moose</b><small>Property Co.</small></span>
+    </a>
+    <button class="logout-btn" onclick="localStorage.removeItem('mpc_auth');window.location.href='login.html'">Log out</button>
+  </div>
+</header>
+
+<main class="dash-body">
+  <h1>Tools</h1>
+  <div class="tool-grid">
+
+    <a class="tool-card" href="invoice-generator.html">
+      <div class="icon">📄</div>
+      <h2>Quote &amp; Invoice Generator</h2>
+      <p>Build quotes and invoices with live preview. Print or save as PDF.</p>
+      <span class="go">Open →</span>
+    </a>
+
+  </div>
+</main>
+
+</body>
+</html>

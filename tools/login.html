@@ -73,7 +73,7 @@
 
 <script>
 if (localStorage.getItem('mpc_auth')) {
-  window.location.replace('invoice-generator.html');
+  window.location.replace('dashboard.html');
 }
 
 var USERS = [
@@ -90,7 +90,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
   var match = USERS.filter(function(u) { return u.name === username && u.pass === password; })[0];
   if (match) {
     localStorage.setItem('mpc_auth', '1');
-    window.location.href = 'invoice-generator.html';
+    window.location.href = 'dashboard.html';
   } else {
     err.style.display = 'block';
     document.getElementById('password').value = '';
