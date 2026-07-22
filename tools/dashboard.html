@@ -5,39 +5,103 @@
 <meta charset="UTF-8">
 <meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tools — Moose Property Co.</title>
+<title>Dashboard — Moose Property Co.</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root{color-scheme:light;--white:#f6f4ef;--pure:#ffffff;--ink:#1c1a17;--olive:#555c3a;--stone:#a89c86;--soft:#6f685c;--line:rgba(28,26,23,.13)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Hanken Grotesk',sans-serif;background:var(--white);color:var(--ink);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
-  a{color:inherit;text-decoration:none}
+:root{color-scheme:light;--white:#f6f4ef;--pure:#ffffff;--ink:#1c1a17;--olive:#555c3a;--stone:#a89c86;--soft:#6f685c;--line:rgba(28,26,23,.13)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',sans-serif;background:var(--white);color:var(--ink);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
 
-  .dash-nav{position:sticky;top:0;z-index:50;background:rgba(246,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-  .dash-nav .inner{max-width:1100px;margin:0 auto;padding:0 32px;height:78px;display:flex;align-items:center;justify-content:space-between}
-  .brand{display:flex;align-items:center;gap:12px}
-  .brand .logo{width:42px;height:39px;background:url(../moose-ink.png) center/contain no-repeat;display:inline-block}
-  .brand .wm{display:flex;flex-direction:column;line-height:1}
-  .brand .wm b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:18px}
-  .brand .wm small{font-weight:600;letter-spacing:.28em;font-size:9px;color:var(--soft);margin-top:4px}
-  .logout-btn{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);background:none;border:1.5px solid var(--line);border-radius:3px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s}
-  .logout-btn:hover{color:var(--ink);border-color:var(--stone)}
+/* ── Nav ── */
+.dash-nav{position:sticky;top:0;z-index:50;background:rgba(246,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.dash-nav .inner{max-width:1100px;margin:0 auto;padding:0 32px;height:78px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo{width:42px;height:39px;background:url(../moose-ink.png) center/contain no-repeat;display:inline-block}
+.brand .wm{display:flex;flex-direction:column;line-height:1}
+.brand .wm b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:18px}
+.brand .wm small{font-weight:600;letter-spacing:.28em;font-size:9px;color:var(--soft);margin-top:4px}
+.logout-btn{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);background:none;border:1.5px solid var(--line);border-radius:3px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s}
+.logout-btn:hover{color:var(--ink);border-color:var(--stone)}
 
-  .dash-body{flex:1;max-width:1100px;margin:0 auto;padding:64px 32px;width:100%}
-  .dash-body h1{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:28px}
+/* ── Layout ── */
+.dash-body{flex:1;max-width:1100px;margin:0 auto;padding:52px 32px 80px;width:100%}
 
-  .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-  .tool-card{display:flex;flex-direction:column;gap:6px;padding:26px 28px;background:var(--pure);border:1px solid var(--line);border-radius:8px;transition:transform .18s,border-color .18s,box-shadow .18s}
-  .tool-card:hover{transform:translateY(-2px);border-color:var(--olive);box-shadow:0 8px 24px rgba(28,26,23,.07)}
-  .tool-card .icon{font-size:28px;line-height:1;margin-bottom:8px}
-  .tool-card h2{font-size:18px;font-weight:700;color:#2e2b23}
-  .tool-card p{font-size:14px;color:var(--soft);line-height:1.55}
-  .tool-card .go{margin-top:12px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--olive)}
+/* ── Greeting ── */
+.dash-greeting{margin-bottom:36px}
+.dash-greeting .date-lbl{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:6px}
+.dash-greeting h1{font-size:26px;font-weight:800;color:var(--ink);line-height:1.2}
 
-  @media(max-width:600px){.dash-body{padding:40px 24px}}
+/* ── Stat tiles ── */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.stat-tile{background:var(--pure);border:1px solid var(--line);border-radius:8px;padding:18px 20px 20px}
+.stat-tile.t-alert{border-color:#fca5a5;background:#fff8f8}
+.stat-tile.t-good{border-color:#a7f3d0;background:#f0fdf4}
+.stat-val{font-size:34px;font-weight:800;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;margin-bottom:4px}
+.stat-tile.t-alert .stat-val{color:#991b1b}
+.stat-tile.t-good .stat-val{color:#065f46}
+.stat-lbl{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--stone)}
+
+/* ── Pipeline ── */
+.pipeline-card{background:var(--pure);border:1px solid var(--line);border-radius:8px;padding:20px 24px;margin-bottom:20px}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.link-sm{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--olive);transition:opacity .15s}
+.link-sm:hover{opacity:.7}
+.pipe-track{height:10px;border-radius:6px;background:#ede9e0;overflow:hidden;display:flex;margin-bottom:12px}
+.pipe-seg{height:100%;min-width:2px;transition:width .5s ease}
+.pipe-legend{display:flex;flex-wrap:wrap;gap:10px 18px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--soft)}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.empty-note{font-size:13px;color:var(--stone);font-style:italic}
+
+/* ── 2-col panels ── */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:44px}
+.dash-panel{background:var(--pure);border:1px solid var(--line);border-radius:8px;padding:20px 22px}
+.dash-panel .sec-title{display:block;margin-bottom:12px}
+
+/* follow-up rows */
+.fu-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.fu-row:last-child{border-bottom:none}
+.fu-name{flex:1;min-width:0;font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fu-co{font-size:11px;color:var(--stone);font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fu-date{font-size:11px;font-weight:700;white-space:nowrap;letter-spacing:.02em}
+.fu-date.overdue{color:#991b1b}
+.fu-date.today{color:#854d0e}
+.fu-date.soon{color:var(--soft)}
+.status-pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.04em;white-space:nowrap}
+
+/* type bars */
+.bk-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.bk-row:last-child{margin-bottom:0}
+.bk-lbl{font-size:12px;font-weight:700;width:94px;flex-shrink:0;color:var(--ink)}
+.bk-track{flex:1;height:7px;background:#ede9e0;border-radius:4px;overflow:hidden}
+.bk-bar{height:100%;border-radius:4px;transition:width .5s ease}
+.bk-n{font-size:12px;font-weight:700;width:24px;text-align:right;color:var(--soft);flex-shrink:0}
+
+/* ── Tools ── */
+.tools-head{margin-bottom:14px}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.tool-card{display:flex;flex-direction:column;gap:6px;padding:24px 26px;background:var(--pure);border:1px solid var(--line);border-radius:8px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tool-card:hover{transform:translateY(-2px);border-color:var(--olive);box-shadow:0 8px 24px rgba(28,26,23,.07)}
+.tool-card .icon{font-size:26px;line-height:1;margin-bottom:6px}
+.tool-card h2{font-size:17px;font-weight:700;color:#2e2b23}
+.tool-card p{font-size:13px;color:var(--soft);line-height:1.55}
+.tool-card .go{margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--olive)}
+
+/* ── Responsive ── */
+@media(max-width:860px){
+  .stat-row{grid-template-columns:repeat(3,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .dash-body{padding:36px 20px 60px}
+  .dash-nav .inner{padding:0 20px}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
@@ -53,25 +117,199 @@
 </header>
 
 <main class="dash-body">
-  <h1>Tools</h1>
-  <div class="tool-grid">
 
+  <div class="dash-greeting">
+    <div class="date-lbl" id="dashDate"></div>
+    <h1 id="dashGreeting">Dashboard</h1>
+  </div>
+
+  <!-- Stat tiles -->
+  <div class="stat-row">
+    <div class="stat-tile" id="tile-total">
+      <div class="stat-val" id="s-total">—</div>
+      <div class="stat-lbl">Contacts</div>
+    </div>
+    <div class="stat-tile" id="tile-active">
+      <div class="stat-val" id="s-active">—</div>
+      <div class="stat-lbl">Active Jobs</div>
+    </div>
+    <div class="stat-tile" id="tile-pipeline">
+      <div class="stat-val" id="s-pipeline">—</div>
+      <div class="stat-lbl">In Pipeline</div>
+    </div>
+    <div class="stat-tile" id="tile-followup">
+      <div class="stat-val" id="s-followup">—</div>
+      <div class="stat-lbl">Follow-ups Due</div>
+    </div>
+    <div class="stat-tile" id="tile-won">
+      <div class="stat-val" id="s-won">—</div>
+      <div class="stat-lbl">Won</div>
+    </div>
+  </div>
+
+  <!-- Pipeline bar -->
+  <div class="pipeline-card">
+    <div class="card-head">
+      <span class="sec-title">Pipeline</span>
+      <a class="link-sm" href="crm.html">Open CRM →</a>
+    </div>
+    <div class="pipe-track" id="pipeTrack"></div>
+    <div class="pipe-legend" id="pipeLegend"></div>
+  </div>
+
+  <!-- Follow-ups + Type breakdown -->
+  <div class="dash-grid">
+    <div class="dash-panel">
+      <span class="sec-title">Upcoming Follow-ups</span>
+      <div id="fuList"></div>
+    </div>
+    <div class="dash-panel">
+      <span class="sec-title">By Client Type</span>
+      <div id="typeList"></div>
+    </div>
+  </div>
+
+  <!-- Tools -->
+  <div class="tools-head">
+    <span class="sec-title">Tools</span>
+  </div>
+  <div class="tool-grid">
     <a class="tool-card" href="invoice-generator.html">
       <div class="icon">📄</div>
       <h2>Quote &amp; Invoice Generator</h2>
       <p>Build quotes and invoices with live preview. Print or save as PDF.</p>
       <span class="go">Open →</span>
     </a>
-
     <a class="tool-card" href="crm.html">
       <div class="icon">🗂️</div>
       <h2>CRM</h2>
       <p>Track leads and clients with status, priority, stage, and notes.</p>
       <span class="go">Open →</span>
     </a>
-
   </div>
+
 </main>
 
+<script>
+// ── Greeting ─────────────────────────────────────────────────────────────────
+(function(){
+  const h = new Date().getHours();
+  document.getElementById('dashGreeting').textContent =
+    h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dashDate').textContent =
+    new Date().toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+})();
+
+// ── CRM ───────────────────────────────────────────────────────────────────────
+const CRM_KEY = 'mpc_crm_v1';
+function loadContacts(){ try{return JSON.parse(localStorage.getItem(CRM_KEY)||'[]');}catch(e){return [];} }
+
+const S_LABEL = {lead:'Lead',contacted:'Contacted',proposal:'Proposal',won:'Won',lost:'Lost',hold:'On Hold'};
+const S_COLOR  = {lead:'#1e40af',contacted:'#3730a3',proposal:'#92400e',won:'#065f46',lost:'#991b1b',hold:'#6b7280'};
+const S_BG     = {lead:'#dbeafe',contacted:'#e0e7ff',proposal:'#fef3c7',won:'#d1fae5',lost:'#fee2e2',hold:'#f3f4f6'};
+
+function pill(status){
+  return `<span class="status-pill" style="background:${S_BG[status]||'#f3f4f6'};color:${S_COLOR[status]||'#374151'}">${S_LABEL[status]||status}</span>`;
+}
+
+function renderDashboard(){
+  const contacts = loadContacts();
+  const today    = new Date().toISOString().slice(0,10);
+  const in7days  = new Date(Date.now()+7*86400000).toISOString().slice(0,10);
+
+  // ── Tiles ──────────────────────────────────────────────────────────────────
+  const total    = contacts.length;
+  const active   = contacts.filter(c=>c.stage==='active'||c.stage==='contract').length;
+  const pipeline = contacts.filter(c=>['lead','contacted','proposal'].includes(c.status)).length;
+  const fueDue   = contacts.filter(c=>c.followup&&c.followup<=today).length;
+  const won      = contacts.filter(c=>c.status==='won').length;
+
+  document.getElementById('s-total').textContent    = total;
+  document.getElementById('s-active').textContent   = active;
+  document.getElementById('s-pipeline').textContent = pipeline;
+  document.getElementById('s-followup').textContent = fueDue;
+  document.getElementById('s-won').textContent      = won;
+
+  if(fueDue > 0) document.getElementById('tile-followup').classList.add('t-alert');
+  if(active > 0) document.getElementById('tile-active').classList.add('t-good');
+
+  // ── Pipeline bar ───────────────────────────────────────────────────────────
+  const statuses = ['lead','contacted','proposal','won','lost','hold'];
+  const counts   = {};
+  statuses.forEach(s=>counts[s]=contacts.filter(c=>c.status===s).length);
+  const barDenom = Math.max(total,1);
+
+  const trackEl  = document.getElementById('pipeTrack');
+  const legendEl = document.getElementById('pipeLegend');
+
+  if(total===0){
+    trackEl.innerHTML  = '<div style="width:100%;height:100%;background:#ede9e0;border-radius:6px;"></div>';
+    legendEl.innerHTML = '<span class="empty-note">No contacts yet — open the CRM to add your first.</span>';
+  } else {
+    trackEl.innerHTML = statuses.filter(s=>counts[s]>0).map(s=>{
+      const pct = (counts[s]/barDenom*100).toFixed(1);
+      return `<div class="pipe-seg" style="width:${pct}%;background:${S_COLOR[s]};opacity:.78;" title="${S_LABEL[s]}: ${counts[s]}"></div>`;
+    }).join('');
+    legendEl.innerHTML = statuses.filter(s=>counts[s]>0).map(s=>
+      `<span class="leg-item"><span class="leg-dot" style="background:${S_COLOR[s]};opacity:.78;"></span>${S_LABEL[s]} <span style="color:var(--stone);margin-left:2px;">${counts[s]}</span></span>`
+    ).join('');
+  }
+
+  // ── Follow-ups ─────────────────────────────────────────────────────────────
+  const fuEl    = document.getElementById('fuList');
+  const upcoming = contacts
+    .filter(c=>c.followup&&c.followup<=in7days)
+    .sort((a,b)=>a.followup.localeCompare(b.followup))
+    .slice(0,7);
+
+  if(!upcoming.length){
+    fuEl.innerHTML = '<div class="empty-note" style="padding:4px 0">No follow-ups in the next 7 days.</div>';
+  } else {
+    fuEl.innerHTML = upcoming.map(c=>{
+      const name = [c.firstName,c.lastName].filter(Boolean).join(' ')||'Unnamed';
+      const over  = c.followup < today;
+      const toDay = c.followup === today;
+      const cls   = over ? 'overdue' : toDay ? 'today' : 'soon';
+      const lbl   = over ? `Overdue · ${fmtShort(c.followup)}` : toDay ? 'Today' : fmtShort(c.followup);
+      return `<div class="fu-row">
+        <span class="fu-name">${esc(name)}${c.company?`<span class="fu-co">${esc(c.company)}</span>`:''}</span>
+        ${pill(c.status)}
+        <span class="fu-date ${cls}">${lbl}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Type breakdown ─────────────────────────────────────────────────────────
+  const typeEl = document.getElementById('typeList');
+  const types  = {residential:'Residential',commercial:'Commercial',strata:'Strata'};
+  const tColor = {residential:'#5b21b6',commercial:'#164e63',strata:'#9d174d'};
+  const tCount = {};
+  Object.keys(types).forEach(k=>tCount[k]=contacts.filter(c=>c.type===k).length);
+  const maxT   = Math.max(...Object.values(tCount),1);
+
+  if(total===0){
+    typeEl.innerHTML = '<div class="empty-note" style="padding:4px 0">Add contacts to see a breakdown by type.</div>';
+  } else {
+    typeEl.innerHTML = Object.entries(types).map(([k,lbl])=>{
+      const pct = (tCount[k]/maxT*100).toFixed(0);
+      return `<div class="bk-row">
+        <span class="bk-lbl">${lbl}</span>
+        <div class="bk-track"><div class="bk-bar" style="width:${pct}%;background:${tColor[k]};opacity:.7;"></div></div>
+        <span class="bk-n">${tCount[k]}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmtShort(iso){
+  const [,m,d]=iso.split('-');
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]+' '+Number(d);
+}
+
+renderDashboard();
+window.addEventListener('storage',e=>{if(e.key===CRM_KEY)renderDashboard();});
+</script>
 </body>
 </html>
