@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<script>if(!localStorage.getItem('mpc_auth'))window.location.replace('login.html');</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CRM — Moose Property Co.</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#26402D;
+  --green-2:#1F5C34;
+  --cream:#F4EFE4;
+  --sage:#8DA593;
+  --stone:#9A968C;
+  --ink:#1B1B18;
+  --paper:#FFFFFF;
+  --line:#E4DFD2;
+  --muted:#6B6659;
+  --white:#f6f4ef;
+  --olive:#555c3a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--green);color:var(--cream);padding:14px 24px;position:sticky;top:0;z-index:100}
+.toolbar .brand{display:flex;align-items:center;gap:12px}
+.toolbar .brand .logo{width:36px;height:33px;background:url(../moose-ink.png) center/contain no-repeat;filter:brightness(10);display:inline-block;flex-shrink:0}
+.toolbar .brand .name{font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:17px}
+.toolbar .brand .sub{font-weight:600;letter-spacing:.24em;font-size:9px;color:var(--sage);text-transform:uppercase;margin-top:2px}
+.toolbar-right{display:flex;align-items:center;gap:10px}
+.btn-back{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sage);background:none;border:1.5px solid rgba(141,165,147,.35);border-radius:3px;padding:7px 14px;cursor:pointer;font-family:inherit;transition:.18s}
+.btn-back:hover{color:var(--cream);border-color:var(--sage)}
+.btn-add{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--cream);border:none;border-radius:3px;padding:8px 18px;cursor:pointer;font-family:inherit;transition:.18s}
+.btn-add:hover{background:#fff}
+
+/* ── LAYOUT ── */
+.main{flex:1;display:flex;overflow:hidden}
+.crm-wrap{flex:1;overflow:auto;padding:32px 28px}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.filter-bar label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.filter-select{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:4px;padding:6px 10px;cursor:pointer;outline:none}
+.filter-select:focus{border-color:var(--olive)}
+.search-input{font-family:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:4px;padding:6px 12px;outline:none;width:200px}
+.search-input::placeholder{color:var(--stone)}
+.search-input:focus{border-color:var(--olive)}
+.count-label{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--stone)}
+
+/* ── TABLE ── */
+.crm-table-wrap{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+table{width:100%;border-collapse:collapse;min-width:860px}
+thead th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--line);white-space:nowrap;background:var(--white)}
+thead th:first-child{padding-left:18px}
+tbody tr{border-bottom:1px solid var(--line);transition:background .12s;cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#f9f7f2}
+tbody tr.selected{background:#f0ede4}
+tbody td{padding:11px 14px;vertical-align:middle}
+tbody td:first-child{padding-left:18px}
+.td-name{font-weight:700;font-size:14px;color:var(--ink)}
+.td-sub{font-size:12px;color:var(--muted);font-weight:500;margin-top:1px}
+.td-date{font-size:13px;color:var(--muted)}
+
+/* ── INLINE DROPDOWNS ── */
+.pill-select{appearance:none;-webkit-appearance:none;border:none;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;letter-spacing:.04em;font-family:inherit;cursor:pointer;outline:none;text-align:center}
+
+/* status colours */
+.pill-select.s-lead      {background:#dbeafe;color:#1e40af}
+.pill-select.s-contacted {background:#e0e7ff;color:#3730a3}
+.pill-select.s-proposal  {background:#fef3c7;color:#92400e}
+.pill-select.s-won       {background:#d1fae5;color:#065f46}
+.pill-select.s-lost      {background:#fee2e2;color:#991b1b}
+.pill-select.s-hold      {background:#f3f4f6;color:#4b5563}
+
+/* priority colours */
+.pill-select.p-low       {background:#f3f4f6;color:#6b7280}
+.pill-select.p-medium    {background:#fef9c3;color:#854d0e}
+.pill-select.p-high      {background:#fed7aa;color:#9a3412}
+.pill-select.p-urgent    {background:#fecaca;color:#991b1b}
+
+/* type colours */
+.pill-select.t-residential{background:#ede9fe;color:#5b21b6}
+.pill-select.t-commercial {background:#cffafe;color:#164e63}
+.pill-select.t-strata     {background:#fce7f3;color:#9d174d}
+
+/* stage colours */
+.pill-select.st-inquiry  {background:#f3f4f6;color:#374151}
+.pill-select.st-visit    {background:#e0e7ff;color:#3730a3}
+.pill-select.st-quote    {background:#fef3c7;color:#92400e}
+.pill-select.st-contract {background:#fed7aa;color:#9a3412}
+.pill-select.st-active   {background:#d1fae5;color:#065f46}
+.pill-select.st-complete {background:#e5e7eb;color:#374151}
+
+.pill-select:focus{box-shadow:0 0 0 2px rgba(85,92,58,.3)}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:64px 24px;color:var(--muted)}
+.empty p{font-size:14px;margin-top:8px}
+
+/* ── DETAIL PANEL ── */
+.detail-panel{width:420px;flex-shrink:0;background:var(--paper);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden;transition:width .22s ease;position:relative}
+.detail-panel.closed{width:0;border-left:none}
+
+.panel-inner{width:420px;display:flex;flex-direction:column;height:100%;overflow-y:auto}
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 22px 16px}
+.panel-head-name{flex:1}
+.panel-head-name h2{font-size:20px;font-weight:800;line-height:1.2}
+.panel-head-name .company{font-size:13px;color:var(--muted);margin-top:3px;font-weight:600}
+.panel-close{background:none;border:none;cursor:pointer;color:var(--stone);font-size:20px;padding:4px;line-height:1;border-radius:3px;transition:.15s;flex-shrink:0}
+.panel-close:hover{color:var(--ink);background:var(--cream)}
+
+.panel-pills{display:flex;flex-wrap:wrap;gap:6px;padding:0 22px 16px}
+
+.panel-section{padding:16px 22px;border-top:1px solid var(--line)}
+.panel-section h3{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-bottom:12px}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field-row:last-child{margin-bottom:0}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.field input,.field textarea,.field select{font-family:inherit;font-size:13px;color:var(--ink);background:var(--cream);border:1.5px solid var(--line);border-radius:4px;padding:7px 10px;outline:none;resize:none;width:100%;transition:.15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--olive);background:#fff}
+.field textarea{min-height:120px;line-height:1.6}
+.field-full{grid-column:1/-1}
+
+.panel-save{margin:16px 22px 24px;display:flex;gap:10px}
+.save-btn{flex:1;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--green);color:var(--cream);border:none;border-radius:4px;padding:10px;cursor:pointer;transition:.18s}
+.save-btn:hover{background:var(--green-2)}
+.del-btn{font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:none;color:#991b1b;border:1.5px solid #fca5a5;border-radius:4px;padding:10px 14px;cursor:pointer;transition:.18s}
+.del-btn:hover{background:#fee2e2}
+
+/* toast */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--green);color:var(--cream);font-size:13px;font-weight:700;letter-spacing:.06em;padding:12px 20px;border-radius:5px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:999}
+.toast.show{opacity:1}
+
+@media(max-width:820px){
+  .detail-panel,.detail-panel.closed{width:100%;position:fixed;top:0;left:0;height:100%;z-index:200;transform:translateX(100%);transition:transform .22s ease;border-left:none}
+  .detail-panel:not(.closed){transform:translateX(0)}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand">
+    <span class="logo"></span>
+    <div><div class="name">Moose Property Co.</div><div class="sub">CRM</div></div>
+  </div>
+  <div class="toolbar-right">
+    <button class="btn-back" onclick="location.href='dashboard.html'">← Dashboard</button>
+    <button class="btn-add" onclick="addContact()">+ Add Contact</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="crm-wrap">
+
+    <div class="filter-bar">
+      <label>Filter</label>
+      <input class="search-input" id="searchInput" type="search" placeholder="Search name, company…" oninput="renderTable()">
+      <select class="filter-select" id="filterStatus" onchange="renderTable()">
+        <option value="">All Statuses</option>
+        <option value="lead">Lead</option>
+        <option value="contacted">Contacted</option>
+        <option value="proposal">Proposal Sent</option>
+        <option value="won">Won</option>
+        <option value="lost">Lost</option>
+        <option value="hold">On Hold</option>
+      </select>
+      <select class="filter-select" id="filterType" onchange="renderTable()">
+        <option value="">All Types</option>
+        <option value="residential">Residential</option>
+        <option value="commercial">Commercial</option>
+        <option value="strata">Strata</option>
+      </select>
+      <select class="filter-select" id="filterPriority" onchange="renderTable()">
+        <option value="">All Priorities</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="urgent">Urgent</option>
+      </select>
+      <span class="count-label" id="countLabel"></span>
+    </div>
+
+    <div class="crm-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:220px">Contact</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Stage</th>
+            <th>Follow-up</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="empty" id="emptyState" style="display:none">
+        <div style="font-size:32px">📋</div>
+        <p>No contacts yet — click <strong>+ Add Contact</strong> to get started.</p>
+      </div>
+    </div>
+
+  </div><!-- /crm-wrap -->
+
+  <div class="detail-panel closed" id="detailPanel">
+    <div class="panel-inner">
+      <div class="panel-head">
+        <div class="panel-head-name">
+          <h2 id="pName">—</h2>
+          <div class="company" id="pCompany"></div>
+        </div>
+        <button class="panel-close" onclick="closePanel()" title="Close">✕</button>
+      </div>
+
+      <div class="panel-pills" id="pPills"></div>
+
+      <div class="panel-section">
+        <h3>Contact Info</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>First Name</label>
+            <input id="pFirstName" type="text" placeholder="First">
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input id="pLastName" type="text" placeholder="Last">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Company</label>
+            <input id="pCompanyInput" type="text" placeholder="Company name">
+          </div>
+          <div class="field">
+            <label>Phone</label>
+            <input id="pPhone" type="tel" placeholder="(xxx) xxx-xxxx">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field field-full">
+            <label>Email</label>
+            <input id="pEmail" type="email" placeholder="email@example.com">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field field-full">
+            <label>Property / Address</label>
+            <input id="pAddress" type="text" placeholder="123 Main St, City, ON">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Pipeline</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Status</label>
+            <select id="pStatus">
+              <option value="lead">Lead</option>
+              <option value="contacted">Contacted</option>
+              <option value="proposal">Proposal Sent</option>
+              <option value="won">Won</option>
+              <option value="lost">Lost</option>
+              <option value="hold">On Hold</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Priority</label>
+            <select id="pPriority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Type</label>
+            <select id="pType">
+              <option value="residential">Residential</option>
+              <option value="commercial">Commercial</option>
+              <option value="strata">Strata</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Stage</label>
+            <select id="pStage">
+              <option value="inquiry">Inquiry</option>
+              <option value="visit">Site Visit</option>
+              <option value="quote">Quote</option>
+              <option value="contract">Contract</option>
+              <option value="active">Active</option>
+              <option value="complete">Complete</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field field-full">
+            <label>Next Follow-up</label>
+            <input id="pFollowup" type="date">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Notes</h3>
+        <div class="field">
+          <textarea id="pNotes" placeholder="Add notes, job details, history…"></textarea>
+        </div>
+      </div>
+
+      <div class="panel-save">
+        <button class="save-btn" onclick="saveContact()">Save</button>
+        <button class="del-btn" onclick="deleteContact()">Delete</button>
+      </div>
+    </div>
+  </div><!-- /detail-panel -->
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORE_KEY = 'mpc_crm_v1';
+let contacts = [];
+let activeId = null;
+
+const STATUS_LABEL = {lead:'Lead',contacted:'Contacted',proposal:'Proposal Sent',won:'Won',lost:'Lost',hold:'On Hold'};
+const PRIORITY_LABEL = {low:'Low',medium:'Medium',high:'High',urgent:'Urgent'};
+const TYPE_LABEL = {residential:'Residential',commercial:'Commercial',strata:'Strata'};
+const STAGE_LABEL = {inquiry:'Inquiry',visit:'Site Visit',quote:'Quote',contract:'Contract',active:'Active',complete:'Complete'};
+
+function load(){
+  try{contacts=JSON.parse(localStorage.getItem(STORE_KEY)||'[]')}catch(e){contacts=[]}
+}
+function save(){localStorage.setItem(STORE_KEY,JSON.stringify(contacts))}
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
+
+function newContact(){
+  return {id:uid(),firstName:'',lastName:'',company:'',phone:'',email:'',address:'',
+    status:'lead',priority:'medium',type:'residential',stage:'inquiry',
+    followup:'',notes:'',createdAt:new Date().toISOString()};
+}
+
+function addContact(){
+  const c = newContact();
+  contacts.unshift(c);
+  save();
+  renderTable();
+  openPanel(c.id);
+  document.getElementById('pFirstName').focus();
+}
+
+function renderTable(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const fStatus = document.getElementById('filterStatus').value;
+  const fType = document.getElementById('filterType').value;
+  const fPri = document.getElementById('filterPriority').value;
+
+  const filtered = contacts.filter(c=>{
+    const name = (c.firstName+' '+c.lastName+' '+(c.company||'')).toLowerCase();
+    if(q && !name.includes(q)) return false;
+    if(fStatus && c.status!==fStatus) return false;
+    if(fType && c.type!==fType) return false;
+    if(fPri && c.priority!==fPri) return false;
+    return true;
+  });
+
+  document.getElementById('countLabel').textContent = filtered.length+' contact'+(filtered.length!==1?'s':'');
+
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+
+  if(!filtered.length){
+    tbody.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+
+  tbody.innerHTML = filtered.map(c=>{
+    const fullName = [c.firstName,c.lastName].filter(Boolean).join(' ')||'Unnamed';
+    const followup = c.followup ? formatDate(c.followup) : '<span style="color:var(--stone)">—</span>';
+    const isSelected = c.id===activeId;
+    return `<tr class="${isSelected?'selected':''}" onclick="openPanel('${c.id}')">
+      <td>
+        <div class="td-name">${esc(fullName)}</div>
+        ${c.company?`<div class="td-sub">${esc(c.company)}</div>`:''}
+      </td>
+      <td><select class="pill-select t-${c.type}" onchange="quickSet('${c.id}','type',this)" onclick="e=>e.stopPropagation()">${typeOpts(c.type)}</select></td>
+      <td><select class="pill-select s-${c.status}" onchange="quickSet('${c.id}','status',this)" onclick="e=>e.stopPropagation()">${statusOpts(c.status)}</select></td>
+      <td><select class="pill-select p-${c.priority}" onchange="quickSet('${c.id}','priority',this)" onclick="e=>e.stopPropagation()">${priorityOpts(c.priority)}</select></td>
+      <td><select class="pill-select st-${c.stage}" onchange="quickSet('${c.id}','stage',this)" onclick="e=>e.stopPropagation()">${stageOpts(c.stage)}</select></td>
+      <td class="td-date">${followup}</td>
+    </tr>`;
+  }).join('');
+
+  /* stop row click when dropdown clicked */
+  tbody.querySelectorAll('.pill-select').forEach(sel=>{
+    sel.addEventListener('click',e=>e.stopPropagation());
+    sel.addEventListener('mousedown',e=>e.stopPropagation());
+  });
+}
+
+function quickSet(id, field, sel){
+  const c = contacts.find(x=>x.id===id); if(!c) return;
+  const old = c[field];
+  c[field] = sel.value;
+  save();
+  /* restyle the pill */
+  const prefix = {type:'t-',status:'s-',priority:'p-',stage:'st-'}[field];
+  sel.className = `pill-select ${prefix}${sel.value}`;
+  /* if panel open for this contact, sync panel select */
+  if(activeId===id){
+    const pid = {type:'pType',status:'pStatus',priority:'pPriority',stage:'pStage'}[field];
+    if(pid) document.getElementById(pid).value=sel.value;
+  }
+}
+
+function openPanel(id){
+  const c = contacts.find(x=>x.id===id); if(!c) return;
+  activeId = id;
+  renderTable();
+
+  const fullName = [c.firstName,c.lastName].filter(Boolean).join(' ')||'Unnamed';
+  document.getElementById('pName').textContent = fullName;
+  document.getElementById('pCompany').textContent = c.company||'';
+
+  document.getElementById('pFirstName').value = c.firstName||'';
+  document.getElementById('pLastName').value = c.lastName||'';
+  document.getElementById('pCompanyInput').value = c.company||'';
+  document.getElementById('pPhone').value = c.phone||'';
+  document.getElementById('pEmail').value = c.email||'';
+  document.getElementById('pAddress').value = c.address||'';
+  document.getElementById('pStatus').value = c.status||'lead';
+  document.getElementById('pPriority').value = c.priority||'medium';
+  document.getElementById('pType').value = c.type||'residential';
+  document.getElementById('pStage').value = c.stage||'inquiry';
+  document.getElementById('pFollowup').value = c.followup||'';
+  document.getElementById('pNotes').value = c.notes||'';
+
+  refreshPanelPills(c);
+  document.getElementById('detailPanel').classList.remove('closed');
+}
+
+function refreshPanelPills(c){
+  document.getElementById('pPills').innerHTML = `
+    <span class="pill-select s-${c.status}" style="pointer-events:none">${STATUS_LABEL[c.status]||c.status}</span>
+    <span class="pill-select p-${c.priority}" style="pointer-events:none">${PRIORITY_LABEL[c.priority]||c.priority}</span>
+    <span class="pill-select t-${c.type}" style="pointer-events:none">${TYPE_LABEL[c.type]||c.type}</span>
+    <span class="pill-select st-${c.stage}" style="pointer-events:none">${STAGE_LABEL[c.stage]||c.stage}</span>`;
+}
+
+function closePanel(){
+  activeId = null;
+  document.getElementById('detailPanel').classList.add('closed');
+  renderTable();
+}
+
+function saveContact(){
+  const c = contacts.find(x=>x.id===activeId); if(!c) return;
+  c.firstName = document.getElementById('pFirstName').value.trim();
+  c.lastName = document.getElementById('pLastName').value.trim();
+  c.company = document.getElementById('pCompanyInput').value.trim();
+  c.phone = document.getElementById('pPhone').value.trim();
+  c.email = document.getElementById('pEmail').value.trim();
+  c.address = document.getElementById('pAddress').value.trim();
+  c.status = document.getElementById('pStatus').value;
+  c.priority = document.getElementById('pPriority').value;
+  c.type = document.getElementById('pType').value;
+  c.stage = document.getElementById('pStage').value;
+  c.followup = document.getElementById('pFollowup').value;
+  c.notes = document.getElementById('pNotes').value;
+  save();
+
+  const fullName = [c.firstName,c.lastName].filter(Boolean).join(' ')||'Unnamed';
+  document.getElementById('pName').textContent = fullName;
+  document.getElementById('pCompany').textContent = c.company||'';
+  refreshPanelPills(c);
+  renderTable();
+  toast('Saved ✓');
+}
+
+function deleteContact(){
+  if(!activeId) return;
+  if(!confirm('Delete this contact? This cannot be undone.')) return;
+  contacts = contacts.filter(x=>x.id!==activeId);
+  save();
+  closePanel();
+  toast('Contact deleted');
+}
+
+/* ── helpers ── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function formatDate(d){
+  const [y,m,day]=d.split('-');
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[+m-1]} ${+day}, ${y}`;
+}
+function statusOpts(v){return Object.entries(STATUS_LABEL).map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}
+function priorityOpts(v){return Object.entries(PRIORITY_LABEL).map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}
+function typeOpts(v){return Object.entries(TYPE_LABEL).map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}
+function stageOpts(v){return Object.entries(STAGE_LABEL).map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('')}
+
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+/* keyboard close */
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+load();
+renderTable();
+</script>
+</body>
+</html>
