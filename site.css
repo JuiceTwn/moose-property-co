@@ -116,6 +116,7 @@
   /* ---- service detail pages ---- */
   .svc-hero{position:relative;padding:104px 0 64px;max-width:1100px;margin:0 auto;overflow:hidden}
   .svc-hero .inner{position:relative;z-index:2;padding:0 32px}
+  .svc-hero .ghost{position:absolute;right:-60px;top:10px;width:400px;height:370px;opacity:.05;pointer-events:none}
   .crumb{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-bottom:20px}
   .crumb a{color:var(--olive)}
   .crumb a:hover{color:var(--ink)}
