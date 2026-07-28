@@ -149,8 +149,9 @@
   /* clickable service rows on home */
   a.svc{text-decoration:none}
   a.svc:hover h3{color:var(--olive)}
-  a.svc .go{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--stone);margin-top:8px;display:inline-block}
-  a.svc:hover .go{color:var(--olive)}
+  /* arrow replaces the old per-row "See details" label as the click affordance */
+  a.svc h3::after{content:"→";display:inline-block;margin-left:10px;color:var(--olive);opacity:0;transform:translateX(-5px);transition:opacity .2s,transform .2s}
+  a.svc:hover h3::after,a.svc:focus-visible h3::after{opacity:1;transform:translateX(0)}
 
   /* ---- mobile menu (hamburger) ---- */
   .burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;padding:11px;background:none;border:0;cursor:pointer;margin-right:-11px;flex:none}
