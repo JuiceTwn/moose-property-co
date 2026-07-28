@@ -1,0 +1,47 @@
+name: Build gallery
+
+# Drag photos into gallery/photos/ on github.com and this tidies up after you:
+# shrinks them, rebuilds gallery/photos.json, and commits the result so the
+# site publishes itself. No access key needed anywhere.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gallery/photos/**'
+      - '.github/scripts/build_gallery.py'
+      - '.github/workflows/gallery.yml'
+  workflow_dispatch:        # lets you re-run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-gallery
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install --quiet Pillow
+
+      - name: Shrink photos and rebuild the listing
+        run: python .github/scripts/build_gallery.py
+
+      - name: Commit any changes
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gallery
+          git commit -m "Rebuild gallery listing [skip ci]"
+          git push
