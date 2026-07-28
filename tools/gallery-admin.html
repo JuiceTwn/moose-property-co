@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>if(!localStorage.getItem('mpc_auth'))window.location.replace('login.html');</script>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery Manager — Moose Property Co.</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--white:#f6f4ef;--pure:#ffffff;--ink:#1c1a17;--olive:#555c3a;--stone:#a89c86;--soft:#6f685c;--line:rgba(28,26,23,.13)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',sans-serif;background:var(--white);color:var(--ink);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+
+.dash-nav{position:sticky;top:0;z-index:50;background:rgba(246,244,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.dash-nav .inner{max-width:1100px;margin:0 auto;padding:0 32px;height:78px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo{width:42px;height:39px;background:url(../moose-ink.png) center/contain no-repeat;display:inline-block}
+.brand .wm{display:flex;flex-direction:column;line-height:1}
+.brand .wm b{font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:18px}
+.brand .wm small{font-weight:600;letter-spacing:.28em;font-size:9px;color:var(--soft);margin-top:4px}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.logout-btn{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);background:none;border:1.5px solid var(--line);border-radius:3px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:color .2s,border-color .2s}
+.logout-btn:hover{color:var(--ink);border-color:var(--stone)}
+
+.dash-body{flex:1;max-width:1100px;margin:0 auto;padding:44px 32px 80px;width:100%}
+.dash-greeting{margin-bottom:30px}
+.dash-greeting .date-lbl{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-bottom:6px}
+.dash-greeting h1{font-size:26px;font-weight:800;line-height:1.2}
+.dash-greeting p{font-size:15px;color:var(--soft);margin-top:6px;max-width:64ch}
+
+.card{background:var(--pure);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:20px}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:14px}
+.card h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.card p.hint{font-size:14.5px;color:var(--soft);margin-bottom:16px;max-width:70ch}
+
+label.fld{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+input[type=text],input[type=password],select,textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:5px;padding:11px 13px;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--olive)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.row>div{flex:1;min-width:180px}
+
+.btn{font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.04em;background:var(--ink);color:var(--white);border:0;border-radius:4px;padding:12px 22px;cursor:pointer;transition:background .2s,opacity .2s}
+.btn:hover:not(:disabled){background:var(--olive)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--soft);border:1.5px solid var(--line)}
+.btn.ghost:hover:not(:disabled){background:transparent;color:var(--ink);border-color:var(--stone)}
+.btn.danger{background:transparent;color:#991b1b;border:1.5px solid #fca5a5}
+.btn.danger:hover:not(:disabled){background:#fff8f8}
+.btn.sm{font-size:12px;padding:7px 13px}
+
+.note{border-radius:6px;padding:14px 16px;font-size:14px;margin-bottom:16px;line-height:1.6}
+.note.warn{background:#fffbeb;border:1px solid #fcd34d;color:#78350f}
+.note.err{background:#fff8f8;border:1px solid #fca5a5;color:#991b1b}
+.note.ok{background:#f0fdf4;border:1px solid #a7f3d0;color:#065f46}
+.note.info{background:var(--white);border:1px solid var(--line);color:var(--soft)}
+.note b{font-weight:800}
+.note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:rgba(28,26,23,.06);padding:1px 5px;border-radius:3px}
+.note ol,.note ul{margin:8px 0 0 20px}
+.note li{margin-bottom:4px}
+
+.drop{border:2px dashed var(--line);border-radius:8px;padding:38px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--white)}
+.drop:hover,.drop.over{border-color:var(--olive);background:#fbfaf7}
+.drop .big{font-size:34px;line-height:1;margin-bottom:10px}
+.drop .lbl{font-weight:700;font-size:16px}
+.drop .sub{font-size:13.5px;color:var(--soft);margin-top:4px}
+
+.queue{list-style:none;margin-top:18px;display:grid;gap:12px}
+.q-item{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:7px;padding:12px;background:var(--white)}
+.q-item img{width:104px;height:78px;object-fit:cover;border-radius:4px;flex:none;background:var(--olive)}
+.q-fields{flex:1;min-width:0;display:grid;gap:8px}
+.q-meta{font-size:12px;color:var(--stone);font-weight:600}
+.q-meta .sv{color:#065f46}
+.q-rm{flex:none}
+
+.gal-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-top:6px}
+.gal-cell{border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--white)}
+.gal-cell img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--olive)}
+.gal-cell .body{padding:10px 12px 12px}
+.gal-cell .cap{font-size:13.5px;font-weight:600;line-height:1.4;word-break:break-word}
+.gal-cell .svc{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--stone);margin-top:3px}
+.gal-cell .acts{display:flex;gap:6px;margin-top:9px}
+
+.log{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.8;background:var(--white);border:1px solid var(--line);border-radius:6px;padding:12px 14px;max-height:230px;overflow:auto;margin-top:14px}
+.log div{white-space:pre-wrap;word-break:break-word}
+.log .ok{color:#065f46}
+.log .er{color:#991b1b}
+.log .mut{color:var(--stone)}
+
+.status{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--soft)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--stone);flex:none}
+.dot.on{background:#10b981}
+.dot.off{background:#ef4444}
+
+@media(max-width:600px){
+  .dash-body{padding:32px 20px 60px}
+  .dash-nav .inner{padding:0 20px}
+  .q-item img{width:74px;height:56px}
+}
+</style>
+</head>
+<body>
+
+<header class="dash-nav">
+  <div class="inner">
+    <a href="dashboard.html" class="brand">
+      <span class="logo"></span>
+      <span class="wm"><b>Moose</b><small>Property Co.</small></span>
+    </a>
+    <div class="nav-actions">
+      <a class="logout-btn" href="dashboard.html">&larr; Dashboard</a>
+      <button class="logout-btn" onclick="localStorage.removeItem('mpc_auth');window.location.href='login.html'">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main class="dash-body">
+
+  <div class="dash-greeting">
+    <div class="date-lbl">Gallery Manager</div>
+    <h1>Add photos of our work</h1>
+    <p>Photos you add here are committed straight into the website's repository, so every visitor sees them.
+       They appear on the public <a href="../gallery.html" style="color:var(--olive);font-weight:700">Our work</a> page about a minute after you upload.</p>
+  </div>
+
+  <!-- ── Step 1: connect ─────────────────────────────────────────────────── -->
+  <div class="card" id="cardAuth">
+    <span class="sec-title">Step 1 — Connect to GitHub</span>
+    <h2>One-time setup <span class="status" id="connStatus" style="margin-left:8px"><span class="dot off"></span><span>Not connected</span></span></h2>
+    <p class="hint">This site has no server, so photos are published by saving them into the website's code on GitHub.
+       To let this page do that, it needs an access key from your GitHub account.</p>
+
+    <div class="note warn">
+      <b>Keep this key private.</b> It stays in this browser only &mdash; it is never uploaded, never committed, and no one visiting the website can see it.
+      Anyone who has both your unlocked device and this key could change the website, so use a key limited to just this one repository:
+      <ol>
+        <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--olive);font-weight:700">GitHub &rarr; Fine-grained tokens &rarr; Generate new</a></li>
+        <li>Under <b>Repository access</b>, pick <b>Only select repositories</b> &rarr; <code>moose-property-co</code></li>
+        <li>Under <b>Permissions &rarr; Repository permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Leave everything else alone.</li>
+        <li>Set an expiry you are happy with, generate it, and paste it below.</li>
+      </ol>
+      If a key ever leaks, delete it on that same GitHub page and it stops working immediately.
+    </div>
+
+    <div class="row">
+      <div style="flex:2">
+        <label class="fld" for="tok">GitHub access key</label>
+        <input type="password" id="tok" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
+      </div>
+      <div style="flex:none;display:flex;gap:8px">
+        <button class="btn" id="btnConnect" type="button">Connect</button>
+        <button class="btn ghost" id="btnForget" type="button">Forget key</button>
+      </div>
+    </div>
+    <div id="authMsg" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ── Step 2: add photos ──────────────────────────────────────────────── -->
+  <div class="card" id="cardAdd" style="display:none">
+    <span class="sec-title">Step 2 — Add photos</span>
+    <h2>Drop in as many as you like</h2>
+    <p class="hint">Photos straight off your phone are fine. They get shrunk to a sensible size before upload, so the
+       website stays fast even on a slow rural connection.</p>
+
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose photos">
+      <div class="big">&#128247;</div>
+      <div class="lbl">Tap to choose photos, or drag them here</div>
+      <div class="sub">JPG, PNG, WebP or HEIC &middot; as many at once as you want</div>
+    </div>
+    <input type="file" id="file" accept="image/*" multiple hidden>
+
+    <ul class="queue" id="queue"></ul>
+
+    <div id="uploadBar" style="display:none;margin-top:20px;gap:10px;align-items:center" class="row">
+      <div style="flex:none">
+        <button class="btn" id="btnUpload" type="button">Publish to website</button>
+      </div>
+      <div style="flex:none">
+        <button class="btn ghost" id="btnClear" type="button">Clear all</button>
+      </div>
+      <div style="flex:1;min-width:0"><span class="q-meta" id="totalMeta"></span></div>
+    </div>
+
+    <div id="log" class="log" style="display:none"></div>
+  </div>
+
+  <!-- ── Step 3: manage ──────────────────────────────────────────────────── -->
+  <div class="card" id="cardManage" style="display:none">
+    <span class="sec-title">Step 3 — Photos on the site</span>
+    <h2>Currently live <span class="q-meta" id="liveCount"></span></h2>
+    <p class="hint">Removing a photo here deletes it from the website. It cannot be undone from this page.</p>
+    <div class="gal-list" id="galList"></div>
+  </div>
+
+</main>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Gallery Manager
+//
+// There is no backend. Publishing works by committing files to the GitHub repo
+// that GitHub Pages serves, using a fine-grained token the owner pastes in once
+// and which lives only in this browser's localStorage. The token is never
+// written into any file in the repo — the repo is public, so anything committed
+// there would be readable by the world.
+// ─────────────────────────────────────────────────────────────────────────────
+(function () {
+  var OWNER  = 'JuiceTwn';
+  var REPO   = 'moose-property-co';
+  var BRANCH = 'main';                  // the branch GitHub Pages publishes
+  var DIR    = 'gallery/photos';
+  var MANIFEST = 'gallery/photos.json';
+  var TOKEN_KEY = 'mpc_gh_token';
+
+  var MAX_EDGE = 1600;                  // px on the long side after resize
+  var QUALITY  = 0.82;
+
+  var SERVICES = ['Lawns & Edging','Gutter Cleaning','Window Washing','Pressure Washing',
+                  'Fencing','Retaining Walls','Walkways','Seasonal Care','Other'];
+
+  var token    = localStorage.getItem(TOKEN_KEY) || '';
+  var manifest = { photos: [] };
+  var manifestSha = null;
+  var queue = [];
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function kb(n) { return n < 1048576 ? (n/1024).toFixed(0) + ' KB' : (n/1048576).toFixed(1) + ' MB'; }
+
+  function note(el, kind, html) { el.innerHTML = '<div class="note ' + kind + '">' + html + '</div>'; }
+
+  function log(msg, cls) {
+    var box = $('log');
+    box.style.display = 'block';
+    var d = document.createElement('div');
+    if (cls) d.className = cls;
+    d.textContent = msg;
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ── GitHub API ────────────────────────────────────────────────────────────
+  function api(path, opts) {
+    opts = opts || {};
+    return fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + path, {
+      method: opts.method || 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) {
+          var e = new Error(j.message || ('HTTP ' + r.status));
+          e.status = r.status;
+          throw e;
+        }
+        return j;
+      });
+    });
+  }
+
+  function bytesToB64(buf) {
+    var bytes = new Uint8Array(buf), out = '', CH = 0x8000;
+    for (var i = 0; i < bytes.length; i += CH) {
+      out += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    }
+    return btoa(out);
+  }
+  function textToB64(str) { return bytesToB64(new TextEncoder().encode(str).buffer); }
+
+  function putFile(path, b64, message, sha) {
+    var body = { message: message, content: b64, branch: BRANCH };
+    if (sha) body.sha = sha;
+    return api('/contents/' + path, { method: 'PUT', body: body });
+  }
+
+  // ── Connect ───────────────────────────────────────────────────────────────
+  function setConn(ok, label) {
+    $('connStatus').innerHTML = '<span class="dot ' + (ok ? 'on' : 'off') + '"></span><span>' + esc(label) + '</span>';
+  }
+
+  function connect(silent) {
+    if (!token) { setConn(false, 'Not connected'); return Promise.resolve(false); }
+    setConn(false, 'Checking…');
+    // Verifying against the repo itself also confirms the token's scope is right.
+    return api('/contents/' + MANIFEST + '?ref=' + BRANCH)
+      .then(function (j) {
+        manifestSha = j.sha;
+        var raw = decodeURIComponent(escape(atob((j.content || '').replace(/\n/g, ''))));
+        try { manifest = JSON.parse(raw); } catch (e) { manifest = { photos: [] }; }
+        if (!Array.isArray(manifest.photos)) manifest.photos = [];
+        setConn(true, 'Connected');
+        if (!silent) note($('authMsg'), 'ok', '<b>Connected.</b> You can add photos below.');
+        $('cardAdd').style.display = '';
+        $('cardManage').style.display = '';
+        renderManage();
+        return true;
+      })
+      .catch(function (e) {
+        setConn(false, 'Not connected');
+        var msg;
+        if (e.status === 401) {
+          msg = '<b>That key was not accepted.</b> It may be mistyped or expired. Generate a fresh one and paste it again.';
+        } else if (e.status === 403) {
+          msg = '<b>That key does not have permission.</b> Check it has <b>Contents: Read and write</b> on <code>' + REPO + '</code>.';
+        } else if (e.status === 404) {
+          msg = '<b>Could not find the gallery file.</b> Either the key cannot see <code>' + OWNER + '/' + REPO + '</code>, or <code>' + MANIFEST + '</code> is missing on the <code>' + BRANCH + '</code> branch.';
+        } else {
+          msg = '<b>Could not reach GitHub.</b> ' + esc(e.message);
+        }
+        note($('authMsg'), 'err', msg);
+        $('cardAdd').style.display = 'none';
+        $('cardManage').style.display = 'none';
+        return false;
+      });
+  }
+
+  $('btnConnect').addEventListener('click', function () {
+    var v = $('tok').value.trim();
+    if (!v) { note($('authMsg'), 'err', 'Paste your GitHub access key first.'); return; }
+    token = v;
+    localStorage.setItem(TOKEN_KEY, token);
+    $('tok').value = '';
+    connect(false);
+  });
+
+  $('btnForget').addEventListener('click', function () {
+    localStorage.removeItem(TOKEN_KEY);
+    token = '';
+    setConn(false, 'Not connected');
+    note($('authMsg'), 'info', 'Key removed from this browser. It is still valid on GitHub &mdash; delete it there too if you no longer want it to work.');
+    $('cardAdd').style.display = 'none';
+    $('cardManage').style.display = 'none';
+  });
+
+  // ── Resize + queue ────────────────────────────────────────────────────────
+  function shrink(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var scale = Math.min(1, MAX_EDGE / Math.max(w, h));
+        var nw = Math.round(w * scale), nh = Math.round(h * scale);
+        var c = document.createElement('canvas');
+        c.width = nw; c.height = nh;
+        c.getContext('2d').drawImage(img, 0, 0, nw, nh);
+        c.toBlob(function (blob) {
+          URL.revokeObjectURL(url);
+          if (!blob) { reject(new Error('Could not process this image')); return; }
+          var preview = c.toDataURL('image/jpeg', 0.5);
+          // An already-small JPEG can come out *larger* after re-encoding.
+          // In that case keep the original bytes untouched.
+          var isJpeg = /^image\/jpe?g$/i.test(file.type);
+          if (isJpeg && scale === 1 && blob.size >= file.size) {
+            resolve({ blob: file, w: w, h: h, preview: preview });
+          } else {
+            resolve({ blob: blob, w: nw, h: nh, preview: preview });
+          }
+        }, 'image/jpeg', QUALITY);
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        reject(new Error('Not an image this browser can read (HEIC from iPhone may need converting)'));
+      };
+      img.src = url;
+    });
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().replace(/\.[a-z0-9]+$/, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'photo';
+  }
+
+  function addFiles(files) {
+    Array.prototype.forEach.call(files, function (f) {
+      if (!/^image\//.test(f.type) && !/\.(jpe?g|png|webp|heic|heif)$/i.test(f.name)) return;
+      var entry = { name: f.name, orig: f.size, status: 'working' };
+      queue.push(entry);
+      renderQueue();
+      shrink(f).then(function (r) {
+        entry.blob = r.blob; entry.w = r.w; entry.h = r.h;
+        entry.preview = r.preview; entry.size = r.blob.size;
+        entry.caption = ''; entry.service = SERVICES[0];
+        entry.status = 'ready';
+        renderQueue();
+      }).catch(function (e) {
+        entry.status = 'error'; entry.error = e.message;
+        renderQueue();
+      });
+    });
+  }
+
+  function renderQueue() {
+    var ul = $('queue');
+    if (!queue.length) {
+      ul.innerHTML = '';
+      $('uploadBar').style.display = 'none';
+      return;
+    }
+    $('uploadBar').style.display = 'flex';
+    ul.innerHTML = queue.map(function (q, i) {
+      if (q.status === 'error') {
+        return '<li class="q-item"><div class="q-fields"><b>' + esc(q.name) + '</b>' +
+               '<span class="q-meta" style="color:#991b1b">' + esc(q.error) + '</span></div>' +
+               '<button class="btn ghost sm q-rm" data-rm="' + i + '" type="button">Remove</button></li>';
+      }
+      if (q.status === 'working') {
+        return '<li class="q-item"><div class="q-fields"><b>' + esc(q.name) + '</b>' +
+               '<span class="q-meta">Preparing…</span></div></li>';
+      }
+      return '<li class="q-item">' +
+        '<img src="' + q.preview + '" alt="">' +
+        '<div class="q-fields">' +
+          '<input type="text" data-cap="' + i + '" placeholder="Caption — e.g. Cedar fence rebuild, Paisley" value="' + esc(q.caption) + '">' +
+          '<select data-svc="' + i + '">' + SERVICES.map(function (s) {
+            return '<option' + (s === q.service ? ' selected' : '') + '>' + esc(s) + '</option>';
+          }).join('') + '</select>' +
+          '<span class="q-meta">' + esc(q.name) + ' &middot; ' + kb(q.orig) +
+            ' <span class="sv">&rarr; ' + kb(q.size) + '</span> &middot; ' + q.w + '&times;' + q.h + '</span>' +
+        '</div>' +
+        '<button class="btn ghost sm q-rm" data-rm="' + i + '" type="button">Remove</button>' +
+      '</li>';
+    }).join('');
+
+    var ready = queue.filter(function (q) { return q.status === 'ready'; });
+    var saved = queue.reduce(function (a, q) { return a + (q.status === 'ready' ? q.orig - q.size : 0); }, 0);
+    $('totalMeta').innerHTML = ready.length + ' photo' + (ready.length === 1 ? '' : 's') + ' ready' +
+      (saved > 0 ? ' &middot; <span class="sv">' + kb(saved) + ' saved by shrinking</span>' : '');
+    $('btnUpload').disabled = !ready.length;
+  }
+
+  $('queue').addEventListener('input', function (e) {
+    var c = e.target.getAttribute('data-cap'), s = e.target.getAttribute('data-svc');
+    if (c !== null) queue[+c].caption = e.target.value;
+    if (s !== null) queue[+s].service = e.target.value;
+  });
+  $('queue').addEventListener('click', function (e) {
+    var rm = e.target.getAttribute && e.target.getAttribute('data-rm');
+    if (rm !== null && rm !== undefined) { queue.splice(+rm, 1); renderQueue(); }
+  });
+
+  $('drop').addEventListener('click', function () { $('file').click(); });
+  $('drop').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); }
+  });
+  $('file').addEventListener('change', function (e) { addFiles(e.target.files); e.target.value = ''; });
+  ['dragenter','dragover'].forEach(function (ev) {
+    $('drop').addEventListener(ev, function (e) { e.preventDefault(); $('drop').classList.add('over'); });
+  });
+  ['dragleave','drop'].forEach(function (ev) {
+    $('drop').addEventListener(ev, function (e) { e.preventDefault(); $('drop').classList.remove('over'); });
+  });
+  $('drop').addEventListener('drop', function (e) {
+    if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files);
+  });
+  $('btnClear').addEventListener('click', function () { queue = []; renderQueue(); });
+
+  // ── Publish ───────────────────────────────────────────────────────────────
+  function blobToB64(blob) {
+    return blob.arrayBuffer().then(bytesToB64);
+  }
+
+  function uniqueName(base) {
+    var used = {};
+    manifest.photos.forEach(function (p) { used[p.file] = 1; });
+    queue.forEach(function (q) { if (q.finalName) used[q.finalName] = 1; });
+    var stamp = new Date().toISOString().slice(0, 10);
+    var name = stamp + '-' + base + '.jpg', n = 2;
+    while (used[name]) { name = stamp + '-' + base + '-' + n + '.jpg'; n++; }
+    return name;
+  }
+
+  $('btnUpload').addEventListener('click', function () {
+    var ready = queue.filter(function (q) { return q.status === 'ready'; });
+    if (!ready.length) return;
+
+    $('btnUpload').disabled = true;
+    $('btnClear').disabled = true;
+    $('log').innerHTML = '';
+    log('Publishing ' + ready.length + ' photo(s) to ' + OWNER + '/' + REPO + '@' + BRANCH + '…', 'mut');
+
+    var added = [];
+
+    // Upload images one at a time so a failure part-way is easy to read.
+    var chain = ready.reduce(function (prev, q) {
+      return prev.then(function () {
+        var base = slug(q.caption || q.service || q.name);
+        q.finalName = uniqueName(base);
+        return blobToB64(q.blob).then(function (b64) {
+          return putFile(DIR + '/' + q.finalName, b64, 'Add gallery photo: ' + q.finalName);
+        }).then(function () {
+          added.push({
+            file: q.finalName,
+            caption: q.caption || q.service,
+            service: q.service,
+            w: q.w, h: q.h,
+            added: new Date().toISOString().slice(0, 10)
+          });
+          log('✓ ' + q.finalName + '  (' + kb(q.size) + ')', 'ok');
+        }).catch(function (e) {
+          log('✗ ' + q.finalName + ' — ' + e.message, 'er');
+          throw e;
+        });
+      });
+    }, Promise.resolve());
+
+    chain.then(function () {
+      // Newest first, so the gallery leads with recent work.
+      manifest.photos = added.concat(manifest.photos);
+      return putFile(MANIFEST, textToB64(JSON.stringify(manifest, null, 2) + '\n'),
+                     'Update gallery listing (+' + added.length + ')', manifestSha);
+    }).then(function (res) {
+      manifestSha = res.content.sha;
+      log('✓ Gallery list updated.', 'ok');
+      log('Done. The website rebuilds itself — give it about a minute, then check the Our work page.', 'mut');
+      queue = [];
+      renderQueue();
+      renderManage();
+    }).catch(function (e) {
+      log('Stopped: ' + e.message, 'er');
+      log('Any photos ticked above did upload. Reconnect and try the rest again.', 'mut');
+      connect(true);
+    }).then(function () {
+      $('btnUpload').disabled = false;
+      $('btnClear').disabled = false;
+    });
+  });
+
+  // ── Manage existing ───────────────────────────────────────────────────────
+  function renderManage() {
+    var list = $('galList');
+    $('liveCount').textContent = manifest.photos.length
+      ? '(' + manifest.photos.length + ')' : '';
+    if (!manifest.photos.length) {
+      list.innerHTML = '<p class="q-meta">No photos yet. Add some above.</p>';
+      return;
+    }
+    list.innerHTML = manifest.photos.map(function (p, i) {
+      var src = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/' + BRANCH + '/' +
+                DIR + '/' + encodeURIComponent(p.file);
+      return '<div class="gal-cell">' +
+        '<img src="' + src + '" alt="" loading="lazy">' +
+        '<div class="body">' +
+          '<div class="cap">' + esc(p.caption || '—') + '</div>' +
+          '<div class="svc">' + esc(p.service || '') + '</div>' +
+          '<div class="acts"><button class="btn danger sm" data-del="' + i + '" type="button">Remove</button></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  $('galList').addEventListener('click', function (e) {
+    var d = e.target.getAttribute && e.target.getAttribute('data-del');
+    if (d === null || d === undefined) return;
+    var p = manifest.photos[+d];
+    if (!confirm('Remove "' + (p.caption || p.file) + '" from the website?\n\nThis deletes the photo for good.')) return;
+
+    e.target.disabled = true;
+    $('log').innerHTML = '';
+    log('Removing ' + p.file + '…', 'mut');
+
+    // Look up the file's current sha, delete it, then rewrite the listing.
+    api('/contents/' + DIR + '/' + encodeURIComponent(p.file) + '?ref=' + BRANCH)
+      .then(function (j) {
+        return api('/contents/' + DIR + '/' + encodeURIComponent(p.file), {
+          method: 'DELETE',
+          body: { message: 'Remove gallery photo: ' + p.file, sha: j.sha, branch: BRANCH }
+        });
+      })
+      .catch(function (e) {
+        // A missing file should not block tidying the listing.
+        if (e.status === 404) { log('(file was already gone)', 'mut'); return; }
+        throw e;
+      })
+      .then(function () {
+        manifest.photos.splice(+d, 1);
+        return putFile(MANIFEST, textToB64(JSON.stringify(manifest, null, 2) + '\n'),
+                       'Update gallery listing (-1)', manifestSha);
+      })
+      .then(function (res) {
+        manifestSha = res.content.sha;
+        log('✓ Removed.', 'ok');
+        renderManage();
+      })
+      .catch(function (err) {
+        log('✗ ' + err.message, 'er');
+        e.target.disabled = false;
+        connect(true);
+      });
+  });
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  if (token) {
+    note($('authMsg'), 'info', 'Using the key saved in this browser.');
+    connect(true);
+  } else {
+    setConn(false, 'Not connected');
+  }
+})();
+</script>
+</body>
+</html>

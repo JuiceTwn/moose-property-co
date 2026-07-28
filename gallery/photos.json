@@ -1,0 +1,28 @@
+{
+  "photos": [
+    {
+      "file": "gutter-before.jpg",
+      "caption": "Gutter cleaning, before",
+      "service": "Gutter Cleaning",
+      "w": 1600,
+      "h": 1200,
+      "added": "2026-07-28"
+    },
+    {
+      "file": "gutter-in-progress.jpg",
+      "caption": "Guards off, each one hand-wiped",
+      "service": "Gutter Cleaning",
+      "w": 1170,
+      "h": 1560,
+      "added": "2026-07-28"
+    },
+    {
+      "file": "gutter-after.jpg",
+      "caption": "Gutter cleaning, after",
+      "service": "Gutter Cleaning",
+      "w": 1170,
+      "h": 1560,
+      "added": "2026-07-28"
+    }
+  ]
+}
