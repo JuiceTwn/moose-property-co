@@ -1,0 +1,9 @@
+# Moose Property Co. — https://mooseproperty.co
+
+User-agent: *
+Allow: /
+
+# Internal team tools — not for indexing
+Disallow: /tools/
+
+Sitemap: https://mooseproperty.co/sitemap.xml

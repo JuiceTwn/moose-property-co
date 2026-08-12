@@ -189,3 +189,6 @@
     nav.open .mobilemenu{max-height:88vh;overflow-y:auto}
     .navlinks{gap:18px}
   }
+
+  /* gallery slot with no photo dropped in yet */
+  .shot.no-photo img{display:none}
