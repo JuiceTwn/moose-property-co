@@ -1,9 +1,14 @@
 {
+  "id": "/",
   "name": "Moose Property Co.",
   "short_name": "Moose",
   "description": "Property maintenance and hardscaping across the Grey-Bruce region of Ontario.",
+  "lang": "en-CA",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "categories": ["business", "lifestyle"],
   "background_color": "#f6f4ef",
   "theme_color": "#555c3a",
   "icons": [

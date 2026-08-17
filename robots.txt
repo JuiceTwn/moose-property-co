@@ -3,7 +3,11 @@
 User-agent: *
 Allow: /
 
-# Internal team tools — not for indexing
-Disallow: /tools/
+# Internal team tools are kept out of search by the "noindex" tag on each of
+# those pages. They are deliberately NOT disallowed here: the tools are linked
+# from the site nav, and a Disallow rule would stop crawlers from fetching them
+# and therefore from ever reading that noindex — which is what lets a blocked
+# URL show up in results anyway. Letting them be crawled is what gets them
+# dropped from the index for good.
 
 Sitemap: https://mooseproperty.co/sitemap.xml

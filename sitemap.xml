@@ -1,56 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://mooseproperty.co/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://mooseproperty.co/images/gutter-before.jpg</image:loc>
+      <image:title>Clogged eavestrough before cleaning</image:title>
+      <image:caption>Clogged eavestrough packed with leaves before cleaning, Grey-Bruce Ontario</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://mooseproperty.co/images/gutter-in-progress.jpg</image:loc>
+      <image:title>Gutter cleaning in progress</image:title>
+      <image:caption>Gutter guards removed and the trough being hand-cleared during a cleaning job</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://mooseproperty.co/images/gutter-after.jpg</image:loc>
+      <image:title>Clear eavestrough after cleaning</image:title>
+      <image:caption>Clear, flushed eavestrough with guards refitted after cleaning</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/lawns-and-edging.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/gutter-cleaning.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/window-washing.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/pressure-washing.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/fencing.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/retaining-walls.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/walkways.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mooseproperty.co/services/seasonal-care.html</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
