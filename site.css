@@ -147,11 +147,13 @@
   .svc-media video{aspect-ratio:720/1280;object-fit:cover;background:var(--ink)}
   .svc-media.clip{max-width:380px}
   .svc-media figcaption{margin-top:14px;text-align:center;color:var(--soft);font-size:15.5px}
+  /* On a phone both of these are tall portraits, so full width makes each one a
+     screen-filling slab. Sit them as cards instead: matching width so the edges
+     line up, and a height cap so context stays visible around them. */
   @media(max-width:760px){
-    .svc-media{max-width:100%}
-    /* keep the clip from eating a whole phone screen — it crops, the before/after never does */
-    .svc-media.clip{max-width:320px}
-    .svc-media.clip video{max-height:58vh}
+    .svc-media,.svc-media.clip{max-width:min(240px,62vw)}
+    .svc-media + .svc-media{margin-top:32px}
+    .svc-media img,.svc-media video{width:auto;max-width:100%;max-height:52vh;margin:0 auto}
   }
 
   .more{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
